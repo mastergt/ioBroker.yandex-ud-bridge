@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="../admin/editor.css">
+<script src="../admin/editor.js"></script>
+</head>
+<body>
+<div class="m adapter-container bridge-root">
+  <aside class="rail">
+    <div class="brand"><div class="brand-icon">⌂</div><div><b>Яндекс · Bridge</b><small>Устройства ioBroker</small></div></div>
+    <button class="nav is-selected" data-view="devices">▦ &nbsp; Устройства</button>
+    <button class="nav" data-view="server">◉ &nbsp; Сервер и HTTPS</button>
+    <button class="nav" data-view="auth">♙ &nbsp; Авторизация</button>
+    <button class="nav" data-view="diagnostic">◈ &nbsp; Проверка</button>
+    <button class="nav" data-view="migration">⇢ &nbsp; Импорт config.js</button>
+    <button class="nav" data-view="advanced">⚙ &nbsp; Дополнительно</button>
+    <div class="rail-foot"><span class="pulse"></span> Локальный адаптер<br><small>Никакого yandex2mqtt</small></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar"><div><div class="eyebrow" id="breadcrumb">МОИ УСТРОЙСТВА</div><h1 id="page-heading">Устройства</h1><p id="page-subtitle">Управляйте тем, что увидит Алиса</p></div><div id="top-action"></div></header>
+    <div class="notice" id="notice" role="status" hidden></div>
+    <section id="content" aria-live="polite"></section>
+    <div class="bottom-hint" id="save-hint">Изменения применяются после кнопки «Сохранить» в окне ioBroker.</div>
+  </main>
+</div>
+<input id="config-file" type="file" accept=".js,.txt,text/plain,application/javascript" hidden>
+<!-- Native ioBroker Admin selectID dialog, retained across editor rerenders -->
+<div class="m material-dialogs">
+  <div id="dialog-select-member" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <div class="row"><div class="col s12 title"></div></div>
+      <div class="row"><div class="col s12 dialog-content"></div></div>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn btn-set">Выбрать</a>
+      <a class="modal-action modal-close waves-effect waves-green btn btn-close">Отмена</a>
+    </div>
+  </div>
+</div>
+<script>
+window.sendTo = (_instance,cmd,_params,done)=> {
+    if(cmd==='candidates')done([{id:'zigbee.0.hall.lamp.on',name:'Lamp switch',objectType:'state',role:'switch',type:'boolean',write:true}]);
+    if(cmd==='categories')done({rooms:[{id:'enum.rooms.hall',name:'Hall',members:['zigbee.0.hall']}],functions:[{id:'enum.functions.light',name:'Light',members:['zigbee.0.hall.lamp']} ]});
+};
+window.load({oauthUserId:'1',devices:[{id:'lamp',name:'Lamp',room:'',type:'devices.types.light',enabled:true}],bindings:[]},()=>{});
+document.querySelector('[data-action="open"]').click();
+const opts=document.querySelector('[data-action="room-choice"]');
+const before=opts && [...opts.options].some(o=>o.value==='enum.rooms.hall');
+opts.value='enum.rooms.hall';opts.dispatchEvent(new Event('change',{bubbles:true}));
+let saved={};window.save(data=>saved=data);
+let flag=document.createElement('output');flag.id='category-ui-test';flag.textContent=before && saved.devices[0].room==='Hall' ? 'PASS' : 'FAIL';
+document.body.append(flag);
+</script></body>
+</html>

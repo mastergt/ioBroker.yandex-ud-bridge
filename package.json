@@ -1,0 +1,32 @@
+{
+  "name": "iobroker.yandex-ud-bridge",
+  "version": "0.3.16",
+  "description": "Yandex Smart Home bridge: availability overrides and full backup/restore",
+  "main": "main.js",
+  "license": "MIT",
+  "author": "Sergey Batayshchikov",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "ioBroker",
+    "yandex",
+    "smart-home",
+    "adapter"
+  ],
+  "dependencies": {
+    "@iobroker/adapter-core": "^3.3.2"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check main.js && node --check lib/bridge.js && node --check lib/transforms.js && node --check lib/server.js && node --check lib/oauth.js && node --check lib/legacy.js && node --check lib/categories.js && node --check admin/editor.js && node --check admin/tab-controller.js && node --check admin/oauth-setup.js && node --check lib/diagnostics.js && node --check lib/action-trace.js && node --check lib/config-backup.js"
+  },
+  "files": [
+    "main.js",
+    "io-package.json",
+    "admin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ]
+}

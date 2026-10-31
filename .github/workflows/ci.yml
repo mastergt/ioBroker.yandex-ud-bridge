@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Test on Node.js ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Check JavaScript syntax
+        run: npm run check
+      - name: Run unit tests
+        run: npm test
+      - name: Validate npm package content
+        run: npm pack --dry-run --json > /tmp/npm-pack-list.json

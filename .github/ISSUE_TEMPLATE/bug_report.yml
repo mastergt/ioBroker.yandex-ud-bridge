@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible adapter defect
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do NOT attach exported backups, OAuth tokens, client secrets, passwords or private IPs."
+  - type: input
+    id: version
+    attributes:
+      label: Adapter version
+      placeholder: 0.3.16
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What happened?
+      description: Expected vs actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Give safe, minimal steps using fake device IDs.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      description: Remove tokens, URLs with secrets, and device identifiers before pasting.

@@ -1,0 +1,56 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><link rel="stylesheet" href="../admin/editor.css"><style>body{margin:0}#smoke{position:fixed;right:0;bottom:0;background:white;color:black;z-index:100001;padding:6px}</style></head><body><div class="m adapter-container bridge-root">
+  <aside class="rail">
+    <div class="brand"><div class="brand-icon">⌂</div><div><b>Яндекс · Bridge</b><small>Устройства ioBroker</small></div></div>
+    <button class="nav is-selected" data-view="devices">▦ &nbsp; Устройства</button>
+    <button class="nav" data-view="server">◉ &nbsp; Сервер и HTTPS</button>
+    <button class="nav" data-view="auth">♙ &nbsp; Авторизация</button>
+    <button class="nav" data-view="diagnostic">◈ &nbsp; Проверка</button>
+    <button class="nav" data-view="migration">⇢ &nbsp; Импорт config.js</button>
+    <button class="nav" data-view="advanced">⚙ &nbsp; Дополнительно</button>
+    <div class="rail-foot"><span class="pulse"></span> Локальный адаптер<br><small>Никакого yandex2mqtt</small></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar"><div><div class="eyebrow" id="breadcrumb">МОИ УСТРОЙСТВА</div><h1 id="page-heading">Устройства</h1><p id="page-subtitle">Управляйте тем, что увидит Алиса</p></div><div id="top-action"></div></header>
+    <div class="notice" id="notice" role="status" hidden></div>
+    <section id="content" aria-live="polite"></section>
+    <div class="bottom-hint" id="save-hint">Изменения применяются после кнопки «Сохранить» в окне ioBroker.</div>
+  </main>
+</div>
+<input id="config-file" type="file" accept=".js,.txt,text/plain,application/javascript" hidden>
+<div id="state-modal-host"></div>
+<div id="smoke">starting</div><script>
+window.sendTo = (_id,cmd,_payload,cb)=>{if(cmd==='candidates')cb([
+{id:'zigbee.0.kitchen.on', objectType:'state',name:'Включение лампы',role:'switch',write:true,type:'boolean'},
+{id:'zigbee.0.kitchen.available',objectType:'state',name:'Доступность',role:'indicator.connected',write:false,type:'boolean'},
+{id:'zigbee.0',objectType:'device',name:'Zigbee controller'},
+{id:'zigbee.0.kitchen',objectType:'channel',name:'Кухня'},
+{id:'mqtt.0.curtain.level',objectType:'state',name:'Уровень штор',role:'level',write:true,type:'number'}]);};
+</script><script src="../admin/editor.js"></script><script>
+var tests=[];const pause=()=>new Promise(r=>setTimeout(r,70));
+(async()=>{
+const click=(selector)=>{const el=document.querySelector(selector);if(!el)throw Error('missing '+selector);el.click();};
+window.load({oauthUserId:'1',devices:[],bindings:[]},()=>{});
+await pause();
+click('[data-action="new"]');click('[data-action="use-template"][data-index="0"]');
+tests.push('device created: '+document.querySelectorAll('.function-box').length);
+click('[data-action="toggle-function"][data-index="0"]');
+click('[data-action="pick-state"][data-path="bindings.0.stateId"]');
+tests.push('modal opened: '+Boolean(document.querySelector('.state-modal')));
+click('[data-action="tree-toggle"][data-path="zigbee"]');
+click('[data-action="tree-toggle"][data-path="zigbee.0"]');
+click('[data-action="tree-toggle"][data-path="zigbee.0.kitchen"]');
+click('[data-action="tree-select"][data-path="zigbee.0.kitchen.on"]');
+tests.push('selected: '+document.querySelector('.picked-state b')?.textContent);
+click('[data-action="pick-state"][data-path="devices.0.onlineStateId"]');
+document.querySelector('#tree-search').value='Доступность';
+document.querySelector('#tree-search').dispatchEvent(new Event('input',{bubbles:true}));
+tests.push('search results: '+document.querySelectorAll('.search-result').length);
+click('[data-action="tree-select"][data-path="zigbee.0.kitchen.available"]');
+tests.push('online selected: '+[...document.querySelectorAll('.picked-state b')].map(x=>x.textContent).join('|'));
+let saved;window.save(data=>saved=data);
+tests.push('state save: '+saved?.bindings?.[0]?.stateId);
+tests.push('online save: '+saved?.devices?.[0]?.onlineStateId);
+}catch(e){tests.push('ERROR: '+e.stack);}
+document.querySelector('#smoke').textContent=tests.join(' // ');
+})();
+</script></body></html>

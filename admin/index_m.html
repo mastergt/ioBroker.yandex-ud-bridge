@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru" data-bridge-mode="settings">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css">
+<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+<link rel="stylesheet" type="text/css" href="../../lib/css/fancytree/ui.fancytree.min.css">
+<script src="../../lib/js/jquery-3.2.1.min.js"></script>
+<script src="../../socket.io/socket.io.js"></script>
+<script src="../../js/translate.js"></script>
+<script src="../../lib/js/materialize.js"></script>
+<script src="../../lib/js/jquery-ui.min.js"></script>
+<script src="../../lib/js/jquery.fancytree-all.min.js"></script>
+<script src="../../lib/js/selectID.js"></script>
+<script src="../../js/adapter-settings.js"></script>
+<script src="words.js"></script>
+<link rel="stylesheet" href="editor.css">
+<script src="oauth-setup.js"></script>
+<script src="editor.js"></script>
+</head>
+<body data-bridge-mode="settings">
+<div class="m adapter-container bridge-root">
+  <aside class="rail">
+    <div class="brand"><div class="brand-icon">⌂</div><div><b>Яндекс · Bridge</b><small>Устройства ioBroker</small></div></div>
+    <button class="nav is-selected" data-view="server">◉ &nbsp; Сервер и HTTPS</button>
+    <button class="nav" data-view="auth">♙ &nbsp; Авторизация</button>
+    <button class="nav" data-view="migration">⇢ &nbsp; Импорт config.js</button>
+    <button class="nav" data-view="backup">▣ &nbsp; Резервная копия</button>
+    <button class="nav" data-view="advanced">⚙ &nbsp; Дополнительно</button>
+    <div class="rail-foot"><span class="pulse"></span> Локальный адаптер<br><small>Никакого yandex2mqtt</small></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar"><div><div class="eyebrow" id="breadcrumb">НАСТРОЙКИ</div><h1 id="page-heading">Сервер и HTTPS</h1><p id="page-subtitle">Параметры сервера и авторизации</p></div><div id="top-action"></div></header>
+    <div class="notice" id="notice" role="status" hidden></div>
+    <section id="content" aria-live="polite"></section>
+    <div class="bottom-hint" id="save-hint">Здесь сохраняются параметры сервера и OAuth. Устройства настраиваются в пункте «Яндекс Умный дом» слева.</div>
+  </main>
+</div>
+<input id="config-file" type="file" accept=".js,.txt,text/plain,application/javascript" hidden>
+<input id="backup-file" type="file" accept=".json,application/json" hidden>
+<!-- Native ioBroker Admin selectID dialog, retained across editor rerenders -->
+<div class="m material-dialogs">
+  <div id="dialog-select-member" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <div class="row"><div class="col s12 title"></div></div>
+      <div class="row"><div class="col s12 dialog-content"></div></div>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn btn-set">Выбрать</a>
+      <a class="modal-action modal-close waves-effect waves-green btn btn-close">Отмена</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
