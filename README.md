@@ -192,10 +192,19 @@ for an additional rate limiter on OAuth endpoints.
 
 ## Changelog
 
-- **0.3.16 — First public release.** Yandex Smart Home OAuth bridge, device bindings,
-  typed mappings, diagnostics and secure backup/restore.
-- Later development updates are recorded in [CHANGELOG.md](CHANGELOG.md).
+### 0.3.22
+
+- Security hardening for OAuth behind a trusted local Nginx reverse proxy.
+- Per-client failed-login throttling, bounded OAuth request tracking and additional security tests.
+
+### 0.3.16 — First public release
+
+- Yandex Smart Home OAuth bridge, device bindings, typed mappings, diagnostics and backup/restore.
+
+Earlier internal development history is intentionally omitted.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Copyright © 2026 Sergey Batayshchikov.
+MIT — see [LICENSE](LICENSE).
+
+Copyright (c) 2026 Sergey Batayshchikov.
