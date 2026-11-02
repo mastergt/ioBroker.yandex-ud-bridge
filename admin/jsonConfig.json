@@ -89,6 +89,21 @@
           "sm": 6,
           "min": 1,
           "max": 65535
+        },
+        "trustProxy": {
+          "type": "checkbox",
+          "label": {
+            "en": "Trust local Nginx X-Real-IP for OAuth login limits",
+            "ru": "Доверять X-Real-IP от локального Nginx для ограничения попыток входа",
+            "de": "X-Real-IP des lokalen Nginx für OAuth-Anmeldelimits vertrauen"
+          },
+          "help": {
+            "en": "Enable only when Nginx connects locally and overwrites X-Real-IP with $remote_addr. Headers from non-local connections are always ignored.",
+            "ru": "Включайте, только если Nginx подключается локально и перезаписывает X-Real-IP значением $remote_addr. Заголовки от удалённых клиентов игнорируются.",
+            "de": "Nur aktivieren, wenn Nginx lokal verbindet und X-Real-IP mit $remote_addr überschreibt."
+          },
+          "sm": 12,
+          "default": false
         }
       }
     },

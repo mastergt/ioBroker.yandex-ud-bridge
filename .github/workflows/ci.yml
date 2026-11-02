@@ -52,3 +52,29 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Install and start adapter in isolated js-controller harness
         run: npm run test:integration
+
+  repository-checker:
+    name: Repository checker (advisory until npm publication)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run official ioBroker repository checker
+        shell: bash
+        env:
+          TARGET_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -o pipefail
+          npx --yes @iobroker/repochecker@latest "https://github.com/mastergt/ioBroker.yandex-ud-bridge" "$TARGET_BRANCH" 2>&1 | tee repochecker.log
+      - name: Upload checker findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repochecker-report
+          path: repochecker.log
+          if-no-files-found: ignore

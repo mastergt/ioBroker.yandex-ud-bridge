@@ -1,0 +1,61 @@
+# Example for a dedicated HTTPS hostname serving ONLY Yandex UD Bridge.
+# Replace example domain and certificate paths. The adapter listens on 127.0.0.1:8096.
+# Install a trusted TLS certificate before enabling the SSL server block.
+# Configure DNS and TCP/443 forwarding for public Internet access.
+# In the adapter settings, enable "Trust local Nginx X-Real-IP" only after verifying proxy_set_header X-Real-IP $remote_addr.
+
+# This file is normally included in nginx's http { } context.
+# Apply a separate per-client request limit only to public OAuth endpoints.
+limit_req_zone $binary_remote_addr zone=yud_oauth:10m rate=12r/m;
+
+server {
+    listen 80;
+    server_name smart.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name smart.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/smart.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/smart.example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Protect the authorization and token endpoints from high-rate probes.
+    # This regex location keeps the URI unchanged and passes X-Real-IP from Nginx.
+    location ~ ^/oauth/(authorize|token|refresh)$ {
+        limit_req zone=yud_oauth burst=12 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:8096;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+        client_max_body_size 128k;
+    }
+
+    # Keep original paths: /oauth/authorize, /oauth/token, /provider/v1.0/...
+    # Important: proxy_pass has NO trailing URI (/); do not rewrite /provider/ here.
+    location / {
+        proxy_pass http://127.0.0.1:8096;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_buffering off;
+        client_max_body_size 128k;
+    }
+}
+
+# Test (from outside the LAN): curl -I https://smart.example.com/provider/v1.0/
+# Test Nginx configuration: nginx -t && systemctl reload nginx
+# On OpenRC-based systems, use the appropriate nginx service reload command.

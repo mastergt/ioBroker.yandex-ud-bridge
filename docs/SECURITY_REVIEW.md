@@ -1,6 +1,6 @@
 # Security review — preparation for ioBroker publication
 
-**Scope:** Yandex UD Bridge v0.3.21, code inspection and automated HTTP/OAuth tests. This is an initial review, not a formal penetration test or a release security guarantee.
+**Scope:** Yandex UD Bridge v0.3.22, code inspection and automated HTTP/OAuth tests. This is an initial review, not a formal penetration test or a release security guarantee.
 
 ## Implemented and tested safeguards
 
@@ -13,7 +13,7 @@
 
 ## Follow-up review items before public npm release
 
-1. **Reverse proxy and brute-force protections.** Login throttling currently groups by `req.socket.remoteAddress`. When Nginx proxies from 127.0.0.1, this means all external visitors share one rate-limit bucket. Confirm the required threat model; introduce an appropriately trusted forwarding-header strategy only if Nginx proxy trust is strictly configured, to avoid attacker-forged IP addresses.
+1. **Reverse proxy and brute-force protections.** Login throttling is per socket IP by default. In a local Nginx deployment, enable `trustProxy` and configure `proxy_set_header X-Real-IP $remote_addr;`: **only** a loopback connection may supply this header, which must contain one valid IPv4/IPv6 address. Do not enable this setting with an externally accessible HTTP listener or a proxy that forwards untrusted `X-Real-IP`. Nginx should also enforce its own request limits on `/oauth/*`, since a process restart resets in-memory counters.
 2. **Input-level abuse protection.** Add integration/load tests for concurrent OAuth grant requests, intentionally slow HTTP connections, and oversized payloads. Node HTTP timeouts and 64 KiB body limit provide initial constraints.
 3. **Admin message provenance.** The Admin sender check uses `msg.from` and relies on ioBroker's internal message routing. Verify that ioBroker enforces sender identity and permissions for `sendTo` before considering this a full trust boundary.
 4. **REST/authorization regression coverage.** Verify OAuth code exchange, refresh rotation, unlink and callback behavior against a live ioBroker integration environment before public publication.
