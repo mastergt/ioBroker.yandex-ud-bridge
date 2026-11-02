@@ -1,6 +1,6 @@
 # Maintainer release and publishing checklist
 
-Maintainer: **Sergey Batayshchikov** (GitHub: [@mastergt](https://github.com/mastergt)).  
+Maintainer: **Sergey Batayshchikov** ([mastergt@mail.ru](mailto:mastergt@mail.ru), GitHub: [@mastergt](https://github.com/mastergt)).  
 Project: [ioBroker.yandex-ud-bridge](https://github.com/mastergt/ioBroker.yandex-ud-bridge).
 
 This is a maintainer checklist, **not** an indication that the adapter is already published to npm or included in the official ioBroker repositories.

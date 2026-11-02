@@ -200,7 +200,7 @@ npm pack --dry-run
 
 Правила участия: [CONTRIBUTING.md](CONTRIBUTING.md). Список публичных релизов: [CHANGELOG.md](CHANGELOG.md). Лицензия: [MIT](LICENSE).
 
-**Автор и сопровождающий проекта:** Sergey Batayshchikov (GitHub: [@mastergt](https://github.com/mastergt)).
+**Автор и сопровождающий проекта:** Sergey Batayshchikov ([mastergt@mail.ru](mailto:mastergt@mail.ru), GitHub: [@mastergt](https://github.com/mastergt)).
 
 ## Безопасность Nginx и OAuth
 
@@ -218,4 +218,4 @@ npm pack --dry-run
 
 ## License
 
-MIT — см. [LICENSE](LICENSE). Copyright © 2026 Sergey Batayshchikov.
+MIT — см. [LICENSE](LICENSE). Copyright (c) 2026 Sergey Batayshchikov <mastergt@mail.ru>.

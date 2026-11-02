@@ -4,7 +4,7 @@
   "description": "Expose ioBroker devices to Yandex Smart Home through a self-hosted OAuth 2.0 provider bridge",
   "main": "main.js",
   "license": "MIT",
-  "author": "Sergey Batayshchikov",
+  "author": "Sergey Batayshchikov <mastergt@mail.ru>",
   "engines": {
     "node": ">=20"
   },

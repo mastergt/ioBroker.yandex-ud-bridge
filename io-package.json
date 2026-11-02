@@ -35,7 +35,7 @@
     "loglevel": "info",
     "tier": 3,
     "authors": [
-      "Sergey Batayshchikov"
+      "Sergey Batayshchikov <mastergt@mail.ru>"
     ],
     "news": {
       "0.3.22": {

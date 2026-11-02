@@ -207,4 +207,4 @@ Earlier internal development history is intentionally omitted.
 
 MIT — see [LICENSE](LICENSE).
 
-Copyright (c) 2026 Sergey Batayshchikov.
+Copyright (c) 2026 Sergey Batayshchikov <mastergt@mail.ru>.

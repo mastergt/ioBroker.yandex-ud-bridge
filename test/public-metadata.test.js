@@ -12,8 +12,8 @@ test('public npm package metadata and version are consistent', () => {
   assert.equal(pkg.name, 'iobroker.yandex-ud-bridge');
   assert.equal(pkg.version, io.common.version);
   assert.equal(io.version, undefined);
-  assert.equal(pkg.author, 'Sergey Batayshchikov');
-  assert.equal(io.common.authors[0], 'Sergey Batayshchikov');
+  assert.equal(pkg.author, 'Sergey Batayshchikov <mastergt@mail.ru>');
+  assert.equal(io.common.authors[0], 'Sergey Batayshchikov <mastergt@mail.ru>');
   assert.equal(pkg.license, 'MIT');
   assert.equal(io.common.license, undefined, 'Do not set common.license together with common.licenseInformation');
   assert.equal(io.common.licenseInformation?.type, 'free');
@@ -36,5 +36,6 @@ test('only public release history is included in ioBroker metadata', () => {
     const content = fs.readFileSync(path.join(root, f), 'utf8');
     assert.doesNotMatch(content, /Community prototype/i, f);
   }
-  assert.match(fs.readFileSync(path.join(root, 'LICENSE'), 'utf8'), /Sergey Batayshchikov/);
+  assert.match(fs.readFileSync(path.join(root, 'LICENSE'), 'utf8'), /Sergey Batayshchikov <mastergt@mail\.ru>/);
+  assert.match(fs.readFileSync(path.join(root, 'README.md'), 'utf8'), /Copyright \(c\) 2026 Sergey Batayshchikov <mastergt@mail\.ru>/);
 });
