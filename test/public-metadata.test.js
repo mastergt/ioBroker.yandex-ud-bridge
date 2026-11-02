@@ -14,6 +14,10 @@ test('public npm package metadata and version are consistent', () => {
   assert.equal(io.version, pkg.version);
   assert.equal(pkg.author, 'Sergey Batayshchikov');
   assert.equal(io.common.authors[0], 'Sergey Batayshchikov');
+  assert.equal(pkg.license, 'MIT');
+  assert.equal(io.common.license, undefined, 'Do not set common.license together with common.licenseInformation');
+  assert.equal(io.common.licenseInformation?.type, 'free');
+  assert.equal(io.common.licenseInformation?.license, pkg.license);
   assert.match(pkg.repository.url, /mastergt\/ioBroker\.yandex-ud-bridge/);
   assert.match(pkg.homepage, /mastergt\/ioBroker\.yandex-ud-bridge/);
   assert.ok(pkg.bugs.url.includes('mastergt/ioBroker.yandex-ud-bridge'));
@@ -27,7 +31,7 @@ test('public npm package metadata and version are consistent', () => {
 
 test('only public release history is included in ioBroker metadata', () => {
   const io = load('io-package.json');
-  assert.deepEqual(Object.keys(io.common.news), [io.common.version]);
+  assert.deepEqual(Object.keys(io.common.news), [io.common.version, '0.3.20', '0.3.16']);
   for (const f of ['LICENSE','CHANGELOG.md','io-package.json','package.json']) {
     const content = fs.readFileSync(path.join(root, f), 'utf8');
     assert.doesNotMatch(content, /Community prototype/i, f);

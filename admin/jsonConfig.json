@@ -1,0 +1,283 @@
+{
+  "type": "tabs",
+  "items": {
+    "server": {
+      "type": "panel",
+      "label": {
+        "en": "Server & HTTPS",
+        "ru": "Сервер и HTTPS",
+        "de": "Server & HTTPS"
+      },
+      "items": {
+        "_serverIntro": {
+          "type": "staticText",
+          "label": {
+            "en": "The Yandex provider API must be exposed through a public HTTPS reverse proxy. Keep the HTTP listener on 127.0.0.1 when using Nginx on this host.",
+            "ru": "API провайдера должен быть доступен через публичный HTTPS reverse proxy. При расположении Nginx на этом сервере оставьте HTTP-сервер на 127.0.0.1.",
+            "de": "The Yandex provider API must be exposed through a public HTTPS reverse proxy. Keep the HTTP listener on 127.0.0.1 when using Nginx on this host."
+          },
+          "sm": 12
+        },
+        "publicBaseUrl": {
+          "type": "text",
+          "label": {
+            "en": "Public HTTPS base URL",
+            "ru": "Публичный HTTPS-адрес",
+            "de": "Public HTTPS base URL"
+          },
+          "sm": 12,
+          "validator": "!data.publicBaseUrl || /^https:\\/\\/[^\\s/?#]+\\/?$/.test(data.publicBaseUrl)"
+        },
+        "_urlHelp": {
+          "type": "staticText",
+          "label": {
+            "en": "Example: https://smart.example.com. Do not add /provider/ to the base URL. Open only TCP 443 to the Internet; do not expose the ioBroker Admin UI or local adapter port.",
+            "ru": "Например: https://smart.example.com. Не добавляйте /provider/ к базовому адресу. Из Интернета должен быть открыт только TCP 443; не публикуйте порт ioBroker Admin или HTTP-порт адаптера.",
+            "de": "Example: https://smart.example.com. Do not add /provider/ to the base URL. Open only TCP 443 to the Internet; do not expose the ioBroker Admin UI or local adapter port."
+          },
+          "sm": 12
+        },
+        "_providerUrl": {
+          "type": "pattern",
+          "label": {
+            "en": "Skill endpoint (copy into Yandex Dialogs)",
+            "ru": "Endpoint навыка (для Яндекс Диалогов)",
+            "de": "Skill endpoint (copy into Yandex Dialogs)"
+          },
+          "pattern": "${data.publicBaseUrl}/provider/",
+          "copyToClipboard": true,
+          "sm": 12
+        },
+        "_oauthUrl": {
+          "type": "pattern",
+          "label": {
+            "en": "OAuth authorization URL",
+            "ru": "Адрес авторизации OAuth",
+            "de": "OAuth authorization URL"
+          },
+          "pattern": "${data.publicBaseUrl}/oauth/authorize",
+          "copyToClipboard": true,
+          "sm": 12
+        },
+        "_tokenUrl": {
+          "type": "pattern",
+          "label": {
+            "en": "OAuth token URL",
+            "ru": "Адрес OAuth-токена",
+            "de": "OAuth token URL"
+          },
+          "pattern": "${data.publicBaseUrl}/oauth/token",
+          "copyToClipboard": true,
+          "sm": 12
+        },
+        "bind": {
+          "type": "text",
+          "label": {
+            "en": "Bind address (local HTTP)",
+            "ru": "Адрес прослушивания (локальный HTTP)",
+            "de": "Bind-Adresse (lokales HTTP)"
+          },
+          "sm": 6
+        },
+        "port": {
+          "type": "number",
+          "label": {
+            "en": "HTTP port",
+            "ru": "HTTP-порт",
+            "de": "HTTP-Port"
+          },
+          "sm": 6,
+          "min": 1,
+          "max": 65535
+        }
+      }
+    },
+    "oauth": {
+      "type": "panel",
+      "label": {
+        "en": "OAuth 2.0",
+        "ru": "Авторизация OAuth",
+        "de": "OAuth 2.0"
+      },
+      "items": {
+        "_oauthHelp": {
+          "type": "staticText",
+          "label": {
+            "en": "Use two different credential sets: Client ID/Secret for the Yandex skill and login/password for the account-linking page. Existing credentials are never rotated automatically. Save any other pending changes before using a generate button.",
+            "ru": "Используются две пары реквизитов: Client ID/Secret для навыка Яндекса и логин/пароль для страницы привязки аккаунта. Уже созданные реквизиты не меняются автоматически. Перед генерацией сохраните остальные изменения формы.",
+            "de": "Use two different credential sets: Client ID/Secret for the Yandex skill and login/password for the account-linking page. Existing credentials are never rotated automatically. Save any other pending changes before using a generate button."
+          },
+          "sm": 12
+        },
+        "oauthClientId": {
+          "type": "text",
+          "label": {
+            "en": "OAuth Client ID (Yandex skill)",
+            "ru": "OAuth Client ID (навык Яндекса)",
+            "de": "OAuth Client ID (Yandex skill)"
+          },
+          "sm": 6
+        },
+        "oauthClientSecret": {
+          "type": "password",
+          "label": {
+            "en": "OAuth Client Secret",
+            "ru": "OAuth Client Secret",
+            "de": "OAuth Client Secret"
+          },
+          "sm": 6,
+          "visible": true
+        },
+        "oauthLogin": {
+          "type": "text",
+          "label": {
+            "en": "Account linking login",
+            "ru": "Логин для привязки аккаунта",
+            "de": "Account linking login"
+          },
+          "sm": 6
+        },
+        "oauthPassword": {
+          "type": "password",
+          "label": {
+            "en": "Account linking password",
+            "ru": "Пароль для привязки аккаунта",
+            "de": "Account linking password"
+          },
+          "sm": 6,
+          "visible": true
+        },
+        "oauthUserId": {
+          "type": "text",
+          "label": {
+            "en": "Internal Yandex user ID",
+            "ru": "Внутренний ID пользователя",
+            "de": "Internal Yandex user ID"
+          },
+          "sm": 6
+        },
+        "_createOAuth": {
+          "type": "sendTo",
+          "label": {
+            "en": "Generate initial credentials (empty fields only)",
+            "ru": "Сгенерировать реквизиты (только если не настроены)",
+            "de": "Generate initial credentials (empty fields only)"
+          },
+          "command": "jsonOAuthBootstrap",
+          "useNative": true,
+          "showProcess": true,
+          "sm": 12
+        },
+        "_rotateLogin": {
+          "type": "sendTo",
+          "label": {
+            "en": "Generate a new account-linking password",
+            "ru": "Сгенерировать новый пароль для входа",
+            "de": "Generate a new account-linking password"
+          },
+          "command": "jsonOAuthRotatePassword",
+          "useNative": true,
+          "showProcess": true,
+          "sm": 12
+        },
+        "_oauthNote": {
+          "type": "staticText",
+          "label": {
+            "en": "Save the settings after generation. Changing Client ID/Secret requires updating the Yandex skill. Changing the login password does not automatically revoke previously issued tokens.",
+            "ru": "После генерации сохраните настройки. При смене Client ID/Secret нужно обновить навык Яндекса. Смена пароля входа сама по себе не отзывает ранее выданные токены.",
+            "de": "Save the settings after generation. Changing Client ID/Secret requires updating the Yandex skill. Changing the login password does not automatically revoke previously issued tokens."
+          },
+          "sm": 12
+        }
+      }
+    },
+    "callbacks": {
+      "type": "panel",
+      "label": {
+        "en": "Callbacks & diagnostics",
+        "ru": "События и диагностика",
+        "de": "Callbacks & diagnostics"
+      },
+      "items": {
+        "callbackEnabled": {
+          "type": "checkbox",
+          "label": {
+            "en": "Enable Yandex state callbacks",
+            "ru": "Передавать изменения состояний в Яндекс",
+            "de": "Enable Yandex state callbacks"
+          },
+          "sm": 12
+        },
+        "callbackSkillId": {
+          "type": "text",
+          "label": {
+            "en": "Yandex skill ID",
+            "ru": "ID навыка Яндекса",
+            "de": "Yandex skill ID"
+          },
+          "sm": 6,
+          "hidden": "!data.callbackEnabled"
+        },
+        "callbackOauthToken": {
+          "type": "password",
+          "label": {
+            "en": "Yandex callback OAuth token",
+            "ru": "OAuth-токен callback API",
+            "de": "Yandex callback OAuth token"
+          },
+          "sm": 6,
+          "hidden": "!data.callbackEnabled",
+          "visible": true
+        },
+        "debugActions": {
+          "type": "checkbox",
+          "label": {
+            "en": "Enable extended action traces in logs",
+            "ru": "Подробное логирование команд Яндекса",
+            "de": "Enable extended action traces in logs"
+          },
+          "sm": 12
+        },
+        "_callbackInfo": {
+          "type": "staticText",
+          "label": {
+            "en": "Optional callbacks send notifications for bound properties marked reportable. Never share OAuth tokens or unredacted action logs publicly.",
+            "ru": "Callback отправляет события для свойств, помеченных для передачи изменений. Никогда не публикуйте OAuth-токены и необработанные диагностические логи.",
+            "de": "Optional callbacks send notifications for bound properties marked reportable. Never share OAuth tokens or unredacted action logs publicly."
+          },
+          "sm": 12
+        }
+      }
+    },
+    "devices": {
+      "type": "panel",
+      "label": {
+        "en": "Devices & backup",
+        "ru": "Устройства и бэкап",
+        "de": "Devices & backup"
+      },
+      "items": {
+        "_deviceInfo": {
+          "type": "staticText",
+          "label": {
+            "en": "Manage device types, bindings, bidirectional mappings, availability, preview and backup/restore in the separate “Yandex Smart Home” Admin tab. Settings saved here do not delete existing devices or mappings.",
+            "ru": "Устройства, привязки, двусторонние преобразования, доступность, предпросмотр и полный бэкап настраиваются в отдельной вкладке «Яндекс Умный дом». Сохранение этой формы не должно удалять ранее созданные устройства и привязки.",
+            "de": "Manage device types, bindings, bidirectional mappings, availability, preview and backup/restore in the separate “Yandex Smart Home” Admin tab. Settings saved here do not delete existing devices or mappings."
+          },
+          "sm": 12
+        },
+        "_github": {
+          "type": "staticLink",
+          "label": {
+            "en": "Adapter documentation",
+            "ru": "Документация адаптера",
+            "de": "Adapter documentation"
+          },
+          "href": "https://github.com/mastergt/ioBroker.yandex-ud-bridge",
+          "button": true,
+          "sm": 12
+        }
+      }
+    }
+  }
+}

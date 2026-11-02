@@ -4,59 +4,25 @@
 @media(max-width:620px){.bridge-root{flex-direction:column}.rail{width:100%;min-height:0;flex-direction:row;flex-wrap:wrap;padding:5px;gap:2px}.brand,.rail-foot{display:none}.nav{width:auto;flex:1;font-size:11px;padding:9px 5px}.nav:first-letter{font-size:14px}.fields,.fields.three{grid-template-columns:1fr}.topbar h1{font-size:23px}.panel{padding:15px}.function-summary{flex-wrap:wrap}}
 @media(prefers-color-scheme:dark){:root{--bg:#171f2c;--panel:#253247;--line:#3d4d63;--text:#e8eef7;--muted:#a9bbd0;--blue:#91aaff;--blue-soft:#344668;--shadow:none}.function-box,.template{background:#1c2b3e}.hint{background:#293e59;color:#bbcee7;border-color:#405878}.code{background:#34445f}.bridge-root input[type=text],.bridge-root input[type=password],.bridge-root input[type=number],.bridge-root input[type=search],.bridge-root select,.bridge-root textarea{border-color:#52647e!important}.notice{background:#3b3427;color:#f2d18b}.tag{background:#2f5a50;color:#abefdb}.tag.warn{background:#66502e;color:#ffe0a8}}
 
-/* Object selector: keep the native ioBroker selectID/FancyTree widget. Only its scrollport is styled. */
+/* Vanilla HTML dialog state picker: no Materialize, JQuery or FancyTree runtime. */
 .state-picker{display:flex;align-items:stretch;gap:8px}.picked-state{min-width:0;flex:1;padding:10px 12px;border:1px solid var(--line);background:var(--bg);border-radius:9px;overflow:hidden}.picked-state b{display:block;font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}.picked-state small{display:block;color:var(--muted);margin-top:3px;font-size:11px}.picked-state em{color:var(--muted);font-style:normal}
-/* Materialize's fixed-footer modal reserves room for the two native action buttons.
-   The selectID plugin populates .dialog-content with a large tree; the old min-height
-   did not establish a scroll container and some Admin themes clipped its overflow. */
-#dialog-select-member.modal{
-  width:min(1080px,96vw)!important;
-  height:86vh!important;
-  height:86dvh!important;
-  max-height:94vh!important;
-  max-height:94dvh!important;
-  overflow:hidden!important;
-}
-#dialog-select-member.modal.modal-fixed-footer .modal-content{
-  height:calc(100% - 56px)!important;
-  max-height:calc(100% - 56px)!important;
-  min-height:0!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  overscroll-behavior:contain;
-  scrollbar-gutter:stable;
-}
-/* Scroll the object list itself: title/search and the footer remain accessible.
-   Height constraints are responsive, including the Admin iframe on small displays. */
-#dialog-select-member .dialog-content{
-  min-height:0!important;
-  max-height:calc(86vh - 190px)!important;
-  max-height:calc(86dvh - 190px)!important;
-  overflow-y:auto!important;
-  overflow-x:auto!important;
-  overscroll-behavior:contain;
-  scrollbar-gutter:stable;
-  touch-action:pan-y;
-}
-#dialog-select-member .modal-footer{
-  bottom:0;
-  z-index:1;
-}
-/* In several ioBroker Admin versions FancyTree creates its own scroll viewport.
-   Give it a bounded height rather than disabling the plugin's native scrolling. */
-#dialog-select-member .dialog-content ul.fancytree-container{
-  max-height:calc(86vh - 245px)!important;
-  max-height:calc(86dvh - 245px)!important;
-  overflow-y:auto!important;
-  overscroll-behavior:contain;
-}
-.advanced-command{padding:7px 0 14px}.advanced-command input[type=checkbox]{margin-right:7px}.state-modal-backdrop .btn{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:var(--blue);border:1px solid var(--blue);color:#fff;padding:7px 10px;cursor:pointer;border-radius:8px;font-weight:600;font-size:12px}.state-modal-backdrop .btn.secondary{background:var(--panel);border-color:var(--line);color:var(--text)}
-@media(max-width:600px){
-  #dialog-select-member.modal{width:98vw!important;height:94vh!important;height:94dvh!important;max-height:98vh!important;max-height:98dvh!important}
-  #dialog-select-member .dialog-content{max-height:calc(94vh - 160px)!important;max-height:calc(94dvh - 160px)!important}
-  #dialog-select-member .dialog-content ul.fancytree-container{max-height:calc(94vh - 205px)!important;max-height:calc(94dvh - 205px)!important}
-  .state-picker{flex-wrap:wrap}.picked-state{flex-basis:100%}
-}
+.state-dialog{width:min(760px,95vw);height:min(740px,92dvh);max-height:92vh;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text);box-shadow:0 20px 80px rgba(0,0,0,.25);overflow:hidden}
+.state-dialog[open]{display:flex;flex-direction:column;gap:12px}
+.state-dialog::backdrop{background:rgba(10,20,35,.65)}
+.state-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.state-dialog-header h2{font-size:19px;margin:0;color:var(--text)}
+.state-dialog input[type=search]{width:100%;min-height:42px;background:var(--panel);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px 12px;font:inherit}
+.state-dialog-tools{display:flex;gap:8px;align-items:center;min-width:0;flex-wrap:wrap}
+#state-picker-path{flex:1;overflow-wrap:anywhere;color:var(--muted);font-family:monospace;font-size:12px}
+#state-picker-count{font-size:12px;color:var(--muted)}
+.state-dialog-results{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:10px;background:var(--bg);scrollbar-gutter:stable}
+.state-dialog-row{display:flex;flex-direction:column;gap:3px;width:100%;padding:12px 14px;text-align:left;background:transparent;color:var(--text);border:0;border-bottom:1px solid var(--line);font:inherit;cursor:pointer}
+.state-dialog-row:hover,.state-dialog-row:focus-visible{background:var(--blue-soft);outline:1px solid var(--blue)}
+.state-dialog-row b{font-size:13px;overflow-wrap:anywhere}
+.state-dialog-row span,.state-dialog-row small{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.state-dialog-row.state-selected{border-left:3px solid var(--blue)}
+.state-dialog-empty{padding:24px;color:var(--muted);text-align:center}
+@media(max-width:600px){.state-dialog{width:98vw;height:92vh;padding:12px}.state-picker{flex-wrap:wrap}.picked-state{flex-basis:100%}}
 
 .room-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,auto);column-gap:18px;align-items:start}.room-fields select{min-width:0}.room-fields .tiny-help{word-break:break-word}@media(max-width:620px){.room-fields{grid-template-columns:1fr}}
 
@@ -103,3 +69,7 @@
 .transform-block .transform-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .transform-block .transform-controls.scale-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:620px){.transform-block .map-pair{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) auto;gap:4px}.transform-block .map-pair .btn{padding:7px}.transform-block .transform-controls{grid-template-columns:1fr}.transform-block .transform-controls.scale-controls{grid-template-columns:1fr}}
+
+
+/* v0.3.19: hide redundant legacy Admin save/close footer in device-manager tab. */
+body[data-bridge-mode=tab] .yud-hidden-admin-footer{display:none!important}

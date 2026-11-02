@@ -11,13 +11,13 @@ function editor(config) {
     const element = id => {
         if (!elements.has(id)) elements.set(id, {
             innerHTML:'', textContent:'', hidden:false, className:'', value:'',
-            classList:{toggle(){}}, focus(){}, setSelectionRange(){}
+            classList:{toggle(){}}, focus(){}, setSelectionRange(){},open:false,showModal(){this.open=true;},close(){this.open=false;},setAttribute(){},removeAttribute(){}
         });
         return elements.get(id);
     };
     const document = {
         documentElement:{dataset:{bridgeMode:'tab'}}, body:{dataset:{bridgeMode:'tab'}},
-        querySelector:element, querySelectorAll:()=>[],
+        querySelector:element, getElementById:id=>element('#'+id), querySelectorAll:()=>[],
         addEventListener(name,cb){(listeners[name] ||= []).push(cb);}
     };
     const jq = () => ({selectId(method,...args) {
@@ -28,7 +28,7 @@ function editor(config) {
     jq.fn={selectId(){}};
     const window={instance:0,confirm:()=>true,jQuery:jq,
         socket:{emit(cmd,callback){assert.equal(cmd,'getObjects');callback(null,{'zigbee.0.device.available':{type:'state',common:{}}});}},
-        bridgeTabSend(cmd,params,done){if(cmd==='candidates')done([]);else if(cmd==='categories')done({rooms:[],functions:[]});else done({});}
+        bridgeTabSend(cmd,params,done){if(cmd==='candidates')done([{id:'zigbee.0.device.available',name:'Available',role:'indicator.connected',objectType:'state'}]);else if(cmd==='categories')done({rooms:[],functions:[]});else done({});}
     };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../admin/editor.js'),'utf8'),{document,window,setTimeout,clearTimeout,console});
     window.load(config,()=>{});
@@ -41,6 +41,7 @@ function editor(config) {
         window.selection=value;
         const el={dataset:{action:'pick-state',path:'devices.0.onlineStateId'},tagName:'BUTTON',closest(sel){return sel==='[data-action]'?this:null;}};
         fire('click',{closest:sel=>el.closest(sel) ? el : null});
+        fire('click',{closest:sel=>sel==='[data-state-index]'?{dataset:{stateIndex:'0'}}:null});
     }
     function change(bind,checked){fire('change',{dataset:{bind},type:'checkbox',checked,tagName:'INPUT'});}
     function save(){let result;window.save(data=>result=JSON.parse(JSON.stringify(data)));return result;}

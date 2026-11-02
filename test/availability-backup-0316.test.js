@@ -50,7 +50,7 @@ test('full export includes native secrets, 2-way mapping, and existing token has
     const snapshot=exportSnapshot(config,tokens,'yandex-ud-bridge.0','0.3.16');
     assert.equal(snapshot.format,'iobroker.yandex-ud-bridge.full-backup');
     assert.equal(snapshot.native.oauthPassword,'password-from-runtime');
-    assert.deepEqual(validateSnapshot(JSON.parse(JSON.stringify(snapshot))).native,config);
+    assert.deepEqual(validateSnapshot(JSON.parse(JSON.stringify(snapshot))).native,{...Object.fromEntries(Object.entries(config).filter(([k])=>!['listenHost','listenPort'].includes(k))),bind:'127.0.0.1',port:8096});
     assert.deepEqual(validateSnapshot(snapshot).oauthTokens,tokens);
 });
 

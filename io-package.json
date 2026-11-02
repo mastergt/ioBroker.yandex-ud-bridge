@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "yandex-ud-bridge",
-    "version": "0.3.16",
+    "version": "0.3.21",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
       "ru": "Мост к Яндекс Умному дому",
@@ -20,8 +20,8 @@
     "enabled": true,
     "messagebox": true,
     "adminUI": {
-      "config": "materialize",
-      "tab": "materialize"
+      "config": "json",
+      "tab": "html"
     },
     "supportCustoms": false,
     "dependencies": [
@@ -34,11 +34,20 @@
     ],
     "loglevel": "info",
     "tier": 3,
-    "license": "MIT",
     "authors": [
       "Sergey Batayshchikov"
     ],
     "news": {
+      "0.3.21": {
+        "en": "Prepare official ioBroker publishing checks: package and js-controller integration tests in CI, with a dedicated security review checklist.",
+        "ru": "Подготовлены проверки для публикации в ioBroker: тесты пакета и интеграционный запуск через js-controller в CI, а также отдельный аудит безопасности.",
+        "de": "Paket- und js-controller-Integrationstests in CI sowie Sicherheitsprüfungen zur Vorbereitung der ioBroker-Veröffentlichung."
+      },
+      "0.3.20": {
+        "en": "Improved hiding of the redundant legacy Admin footer save/close buttons in the custom device editor tab.",
+        "ru": "Улучшено скрытие лишних нижних кнопок legacy Admin (сохранение/закрытие) во вкладке редактора устройств.",
+        "de": "Verbessertes Ausblenden der redundanten unteren Legacy-Admin-Schaltflächen im Geräteeditor-Tab."
+      },
       "0.3.16": {
         "en": "Initial public release: Yandex Smart Home bridge with OAuth, typed mappings, availability controls, diagnostics and backup/restore.",
         "ru": "Первый публичный релиз: мост к Яндекс Умному дому с OAuth, преобразованиями значений, доступностью, диагностикой и резервным копированием.",
@@ -78,8 +87,6 @@
     "readme": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/blob/main/README.md"
   },
   "native": {
-    "listenHost": "127.0.0.1",
-    "listenPort": 8096,
     "oauthClientId": "",
     "oauthClientSecret": "",
     "oauthLogin": "",
@@ -91,7 +98,9 @@
     "devices": [],
     "bindings": [],
     "publicBaseUrl": "",
-    "debugActions": false
+    "debugActions": false,
+    "bind": "127.0.0.1",
+    "port": 8096
   },
   "encryptedNative": [
     "oauthClientSecret",
@@ -142,5 +151,5 @@
       "native": {}
     }
   ],
-  "version": "0.3.16"
+  "version": "0.3.21"
 }

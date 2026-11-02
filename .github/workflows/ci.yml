@@ -7,8 +7,8 @@ on:
 permissions:
   contents: read
 jobs:
-  test:
-    name: Test on Node.js ${{ matrix.node }}
+  unit:
+    name: Unit tests (Node.js ${{ matrix.node }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -24,6 +24,31 @@ jobs:
       - name: Check JavaScript syntax
         run: npm run check
       - name: Run unit tests
-        run: npm test
+        run: npm run test:unit
       - name: Validate npm package content
         run: npm pack --dry-run --json > /tmp/npm-pack-list.json
+  package:
+    name: ioBroker package validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Validate ioBroker package files
+        run: npm run test:package
+  integration:
+    name: ioBroker js-controller integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install and start adapter in isolated js-controller harness
+        run: npm run test:integration

@@ -3,16 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" type="text/css" href="../../css/adapter.css">
-<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
-<link rel="stylesheet" type="text/css" href="../../lib/css/fancytree/ui.fancytree.min.css">
 <script src="../../lib/js/jquery-3.2.1.min.js"></script>
 <script src="../../socket.io/socket.io.js"></script>
 <script src="../../js/translate.js"></script>
-<script src="../../lib/js/materialize.js"></script>
-<script src="../../lib/js/jquery-ui.min.js"></script>
-<script src="../../lib/js/jquery.fancytree-all.min.js"></script>
-<script src="../../lib/js/selectID.js"></script>
 <script src="../../js/adapter-settings.js"></script>
 <script src="words.js"></script>
 <link rel="stylesheet" href="editor.css">
@@ -20,11 +13,13 @@
 <script src="tab-controller.js"></script>
 </head>
 <body data-bridge-mode="tab">
-<div class="m adapter-container bridge-root">
+<div class="bridge-root">
   <aside class="rail">
     <div class="brand"><div class="brand-icon">⌂</div><div><b>Яндекс · Bridge</b><small>Устройства ioBroker</small></div></div>
     <button class="nav is-selected" data-view="devices">▦ &nbsp; Устройства</button>
     <button class="nav" data-view="diagnostic">◈ &nbsp; Проверка</button>
+    <button class="nav" data-view="migration">⇢ &nbsp; Импорт config.js</button>
+    <button class="nav" data-view="backup">▣ &nbsp; Резервная копия</button>
     <div class="rail-foot"><span class="pulse"></span> Локальный адаптер<br><small>Никакого yandex2mqtt</small></div>
   </aside>
   <main class="workspace">
@@ -35,18 +30,14 @@
   </main>
 </div>
 <input id="config-file" type="file" accept=".js,.txt,text/plain,application/javascript" hidden>
-<!-- Native ioBroker Admin selectID dialog, retained across editor rerenders -->
-<div class="m material-dialogs">
-  <div id="dialog-select-member" class="modal modal-fixed-footer">
-    <div class="modal-content">
-      <div class="row"><div class="col s12 title"></div></div>
-      <div class="row"><div class="col s12 dialog-content"></div></div>
-    </div>
-    <div class="modal-footer">
-      <a class="modal-action modal-close waves-effect waves-green btn btn-set">Выбрать</a>
-      <a class="modal-action modal-close waves-effect waves-green btn btn-close">Отмена</a>
-    </div>
-  </div>
-</div>
+<input id="backup-file" type="file" accept=".json,application/json" hidden>
+<!-- Standalone accessible object-state browser. -->
+<dialog id="state-picker-dialog" class="state-dialog" aria-labelledby="state-picker-heading">
+  <div class="state-dialog-header"><h2 id="state-picker-heading">Выбор состояния ioBroker</h2><button class="btn secondary small" type="button" id="state-picker-close" aria-label="Закрыть">✕</button></div>
+  <input id="state-picker-search" type="search" placeholder="Поиск по ID, названию и роли…" autocomplete="off" aria-label="Поиск состояний">
+  <div class="state-dialog-tools"><button class="btn secondary small" id="state-picker-up" type="button">← Выше</button><span id="state-picker-path">Все объекты</span><span id="state-picker-count"></span></div>
+  <div id="state-picker-results" class="state-dialog-results" role="listbox" aria-label="Список состояний ioBroker"></div>
+  <p class="tiny-help">Нажмите на состояние, чтобы выбрать его. Esc или ✕ — отмена.</p>
+</dialog>
 </body>
 </html>

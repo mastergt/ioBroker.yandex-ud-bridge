@@ -9,21 +9,24 @@ const {Bridge,toYandex,fromYandex}=require('../lib/bridge');
 function editor(config){
     const elements=new Map(),listeners={};
     function element(id){if(!elements.has(id))elements.set(id,{
-        innerHTML:'',textContent:'',hidden:false,className:'',classList:{toggle(){}},value:'',focus(){},setSelectionRange(){},
+        innerHTML:'',textContent:'',hidden:false,className:'',classList:{toggle(){}},value:'',focus(){},setSelectionRange(){},open:false,showModal(){this.open=true;},close(){this.open=false;},setAttribute(){},removeAttribute(){},
     });return elements.get(id);}
     const document={documentElement:{dataset:{bridgeMode:'tab'}},body:{dataset:{bridgeMode:'tab'}},
-        querySelector:element,querySelectorAll(){return [];},addEventListener(name,cb){(listeners[name] ||= []).push(cb);}};
+        querySelector:element,getElementById:id=>element('#'+id),querySelectorAll(){return [];},addEventListener(name,cb){(listeners[name] ||= []).push(cb);}};
     const $=()=>({selectId(method,...args){if(method==='init')return this;if(method==='show')args[1](window.nextSelection);return this;}});
     $.fn={selectId(){}};
     const window={instance:0,confirm:()=>true,jQuery:$,socket:{emit(cmd,callback){assert.equal(cmd,'getObjects');callback(null,{'state.test':{type:'state',common:{}}});}},
-        bridgeTabSend(cmd,params,done){if(cmd==='candidates')done([]);else if(cmd==='categories')done({rooms:[],functions:[]});else done({});}};
+        bridgeTabSend(cmd,params,done){if(cmd==='candidates')done([{id:'zigbee.0.a.actual',name:'Actual',role:'state',objectType:'state'},{id:'zigbee.0.a.set',name:'Set',role:'state',objectType:'state'}]);else if(cmd==='categories')done({rooms:[],functions:[]});else done({});}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../admin/editor.js'),'utf8'),
         {document,window,setTimeout,clearTimeout,console});
     window.load(config,()=>{});
     const fire=(event,target)=>{for(const cb of listeners[event]||[]) cb({target,preventDefault(){}});};
     const act=(action,index)=>{const target={dataset:{action,index:String(index??'')},tagName:'BUTTON',closest(sel){return sel==='[data-action]'?this:null;}};fire('click',target);};
     const change=(data,checked,value)=>fire('change',{dataset:data,checked,value,type:'checkbox',tagName:'INPUT'});
-    const pick=(path,value)=>{window.nextSelection=value;fire('click',{dataset:{action:'pick-state',path},tagName:'BUTTON',closest(sel){return sel==='[data-action]'?this:null;}});};
+    const pick=(path,value)=>{fire('click',{dataset:{action:'pick-state',path},tagName:'BUTTON',closest(sel){return sel==='[data-action]'?this:null;}});
+        const choices=['zigbee.0.a.actual','zigbee.0.a.set'];
+        const idx=choices.indexOf(value);assert.ok(idx>=0);
+        fire('click',{closest(sel){return sel==='[data-state-index]'?{dataset:{stateIndex:String(idx)}}:null;}});};
     const save=()=>{let out;window.save(data=>{out=JSON.parse(JSON.stringify(data));});return out;};
     return {window,act,change,pick,save,html:()=>element('#content').innerHTML};
 }
