@@ -11,7 +11,7 @@ test('public npm package metadata and version are consistent', () => {
   const io = load('io-package.json');
   assert.equal(pkg.name, 'iobroker.yandex-ud-bridge');
   assert.equal(pkg.version, io.common.version);
-  assert.equal(io.version, pkg.version);
+  assert.equal(io.version, undefined);
   assert.equal(pkg.author, 'Sergey Batayshchikov');
   assert.equal(io.common.authors[0], 'Sergey Batayshchikov');
   assert.equal(pkg.license, 'MIT');

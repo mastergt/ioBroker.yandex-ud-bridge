@@ -17,3 +17,5 @@ coverage/
 **/oauth-tokens.json
 **/oauth-pending.json
 **/oauth-requests.json
+
+.commitinfo

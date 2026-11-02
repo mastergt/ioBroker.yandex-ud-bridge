@@ -80,7 +80,6 @@
       "singleton": true,
       "order": 155
     },
-    "title": "Yandex Smart Home Bridge",
     "keywords": [
       "yandex",
       "alice",
@@ -156,6 +155,5 @@
       },
       "native": {}
     }
-  ],
-  "version": "0.3.22"
+  ]
 }

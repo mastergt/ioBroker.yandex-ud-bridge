@@ -181,3 +181,21 @@ npm pack --dry-run
 Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Public releases: [CHANGELOG.md](CHANGELOG.md). Licensed under [MIT](LICENSE).
 
 **Author and project maintainer:** Sergey Batayshchikov (GitHub: [@mastergt](https://github.com/mastergt)).
+
+## Reverse proxy security
+
+When using Nginx on the same host, keep the adapter listener on `127.0.0.1`.
+For per-client OAuth login limits, enable **Trust local Nginx X-Real-IP** only when
+Nginx overwrites the `X-Real-IP` header with `$remote_addr`. The setting is
+disabled by default. See the [Nginx configuration example](examples/nginx/yandex-ud-bridge.conf.example)
+for an additional rate limiter on OAuth endpoints.
+
+## Changelog
+
+- **0.3.16 — First public release.** Yandex Smart Home OAuth bridge, device bindings,
+  typed mappings, diagnostics and secure backup/restore.
+- Later development updates are recorded in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright © 2026 Sergey Batayshchikov.

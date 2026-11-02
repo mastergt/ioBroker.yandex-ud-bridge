@@ -9,6 +9,7 @@
     "node": ">=20"
   },
   "keywords": [
+    "ioBroker",
     "iobroker",
     "iobroker-adapter",
     "yandex",

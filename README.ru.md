@@ -201,3 +201,21 @@ npm pack --dry-run
 Правила участия: [CONTRIBUTING.md](CONTRIBUTING.md). Список публичных релизов: [CHANGELOG.md](CHANGELOG.md). Лицензия: [MIT](LICENSE).
 
 **Автор и сопровождающий проекта:** Sergey Batayshchikov (GitHub: [@mastergt](https://github.com/mastergt)).
+
+## Безопасность Nginx и OAuth
+
+При расположении Nginx на том же сервере оставьте HTTP-адаптер на `127.0.0.1`.
+Опцию **«Доверять X-Real-IP от локального Nginx»** включайте, только если Nginx
+перезаписывает `X-Real-IP` значением `$remote_addr`. По умолчанию настройка
+выключена. Дополнительное ограничение запросов к OAuth приведено в
+[примере Nginx](examples/nginx/yandex-ud-bridge.conf.example).
+
+## Changelog
+
+- **0.3.16 — первый публичный релиз.** OAuth-мост к Яндекс Умному дому,
+  привязка устройств, преобразования значений, диагностика и резервное копирование.
+- Дальнейшие изменения — в [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT — см. [LICENSE](LICENSE). Copyright © 2026 Sergey Batayshchikov.

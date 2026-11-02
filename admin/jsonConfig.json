@@ -16,7 +16,11 @@
             "ru": "API провайдера должен быть доступен через публичный HTTPS reverse proxy. При расположении Nginx на этом сервере оставьте HTTP-сервер на 127.0.0.1.",
             "de": "The Yandex provider API must be exposed through a public HTTPS reverse proxy. Keep the HTTP listener on 127.0.0.1 when using Nginx on this host."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "publicBaseUrl": {
           "type": "text",
@@ -26,7 +30,11 @@
             "de": "Public HTTPS base URL"
           },
           "sm": 12,
-          "validator": "!data.publicBaseUrl || /^https:\\/\\/[^\\s/?#]+\\/?$/.test(data.publicBaseUrl)"
+          "validator": "!data.publicBaseUrl || /^https:\\/\\/[^\\s/?#]+\\/?$/.test(data.publicBaseUrl)",
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_urlHelp": {
           "type": "staticText",
@@ -35,7 +43,11 @@
             "ru": "Например: https://smart.example.com. Не добавляйте /provider/ к базовому адресу. Из Интернета должен быть открыт только TCP 443; не публикуйте порт ioBroker Admin или HTTP-порт адаптера.",
             "de": "Example: https://smart.example.com. Do not add /provider/ to the base URL. Open only TCP 443 to the Internet; do not expose the ioBroker Admin UI or local adapter port."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_providerUrl": {
           "type": "pattern",
@@ -46,7 +58,11 @@
           },
           "pattern": "${data.publicBaseUrl}/provider/",
           "copyToClipboard": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_oauthUrl": {
           "type": "pattern",
@@ -57,7 +73,11 @@
           },
           "pattern": "${data.publicBaseUrl}/oauth/authorize",
           "copyToClipboard": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_tokenUrl": {
           "type": "pattern",
@@ -68,7 +88,11 @@
           },
           "pattern": "${data.publicBaseUrl}/oauth/token",
           "copyToClipboard": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "bind": {
           "type": "text",
@@ -77,7 +101,11 @@
             "ru": "Адрес прослушивания (локальный HTTP)",
             "de": "Bind-Adresse (lokales HTTP)"
           },
-          "sm": 6
+          "sm": 6,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "port": {
           "type": "number",
@@ -88,7 +116,11 @@
           },
           "sm": 6,
           "min": 1,
-          "max": 65535
+          "max": 65535,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "trustProxy": {
           "type": "checkbox",
@@ -103,7 +135,11 @@
             "de": "Nur aktivieren, wenn Nginx lokal verbindet und X-Real-IP mit $remote_addr überschreibt."
           },
           "sm": 12,
-          "default": false
+          "default": false,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         }
       }
     },
@@ -122,7 +158,11 @@
             "ru": "Используются две пары реквизитов: Client ID/Secret для навыка Яндекса и логин/пароль для страницы привязки аккаунта. Уже созданные реквизиты не меняются автоматически. Перед генерацией сохраните остальные изменения формы.",
             "de": "Use two different credential sets: Client ID/Secret for the Yandex skill and login/password for the account-linking page. Existing credentials are never rotated automatically. Save any other pending changes before using a generate button."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "oauthClientId": {
           "type": "text",
@@ -131,7 +171,11 @@
             "ru": "OAuth Client ID (навык Яндекса)",
             "de": "OAuth Client ID (Yandex skill)"
           },
-          "sm": 6
+          "sm": 6,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "oauthClientSecret": {
           "type": "password",
@@ -141,7 +185,11 @@
             "de": "OAuth Client Secret"
           },
           "sm": 6,
-          "visible": true
+          "visible": true,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "oauthLogin": {
           "type": "text",
@@ -150,7 +198,11 @@
             "ru": "Логин для привязки аккаунта",
             "de": "Account linking login"
           },
-          "sm": 6
+          "sm": 6,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "oauthPassword": {
           "type": "password",
@@ -160,7 +212,11 @@
             "de": "Account linking password"
           },
           "sm": 6,
-          "visible": true
+          "visible": true,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "oauthUserId": {
           "type": "text",
@@ -169,7 +225,11 @@
             "ru": "Внутренний ID пользователя",
             "de": "Internal Yandex user ID"
           },
-          "sm": 6
+          "sm": 6,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "_createOAuth": {
           "type": "sendTo",
@@ -181,7 +241,11 @@
           "command": "jsonOAuthBootstrap",
           "useNative": true,
           "showProcess": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_rotateLogin": {
           "type": "sendTo",
@@ -193,7 +257,11 @@
           "command": "jsonOAuthRotatePassword",
           "useNative": true,
           "showProcess": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_oauthNote": {
           "type": "staticText",
@@ -202,7 +270,11 @@
             "ru": "После генерации сохраните настройки. При смене Client ID/Secret нужно обновить навык Яндекса. Смена пароля входа сама по себе не отзывает ранее выданные токены.",
             "de": "Save the settings after generation. Changing Client ID/Secret requires updating the Yandex skill. Changing the login password does not automatically revoke previously issued tokens."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         }
       }
     },
@@ -221,7 +293,11 @@
             "ru": "Передавать изменения состояний в Яндекс",
             "de": "Enable Yandex state callbacks"
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "callbackSkillId": {
           "type": "text",
@@ -231,7 +307,11 @@
             "de": "Yandex skill ID"
           },
           "sm": 6,
-          "hidden": "!data.callbackEnabled"
+          "hidden": "!data.callbackEnabled",
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "callbackOauthToken": {
           "type": "password",
@@ -242,7 +322,11 @@
           },
           "sm": 6,
           "hidden": "!data.callbackEnabled",
-          "visible": true
+          "visible": true,
+          "xs": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
         },
         "debugActions": {
           "type": "checkbox",
@@ -251,7 +335,11 @@
             "ru": "Подробное логирование команд Яндекса",
             "de": "Enable extended action traces in logs"
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_callbackInfo": {
           "type": "staticText",
@@ -260,7 +348,11 @@
             "ru": "Callback отправляет события для свойств, помеченных для передачи изменений. Никогда не публикуйте OAuth-токены и необработанные диагностические логи.",
             "de": "Optional callbacks send notifications for bound properties marked reportable. Never share OAuth tokens or unredacted action logs publicly."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         }
       }
     },
@@ -279,7 +371,11 @@
             "ru": "Устройства, привязки, двусторонние преобразования, доступность, предпросмотр и полный бэкап настраиваются в отдельной вкладке «Яндекс Умный дом». Сохранение этой формы не должно удалять ранее созданные устройства и привязки.",
             "de": "Manage device types, bindings, bidirectional mappings, availability, preview and backup/restore in the separate “Yandex Smart Home” Admin tab. Settings saved here do not delete existing devices or mappings."
           },
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         },
         "_github": {
           "type": "staticLink",
@@ -290,9 +386,14 @@
           },
           "href": "https://github.com/mastergt/ioBroker.yandex-ud-bridge",
           "button": true,
-          "sm": 12
+          "sm": 12,
+          "xs": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         }
       }
     }
-  }
+  },
+  "i18n": true
 }
