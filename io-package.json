@@ -36,9 +36,9 @@
     ],
     "news": {
       "0.3.23": {
-        "en": "Updated platform requirements: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.17+, current adapter core and testing harness.",
-        "ru": "Обновлены требования к платформе: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.17+, современные adapter-core и тестовый стенд.",
-        "de": "Aktualisierte Plattformanforderungen: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.17+, aktuelle Adapter-Core- und Testpakete."
+        "en": "Updated platform requirements: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, current adapter core and testing harness.",
+        "ru": "Обновлены требования к платформе: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, современные adapter-core и тестовый стенд.",
+        "de": "Aktualisierte Plattformanforderungen: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, aktuelle Adapter-Core- und Testpakete."
       },
       "0.3.22": {
         "en": "Security hardening: opt-in trusted local Nginx proxy for per-client OAuth login throttling, bounded limiter storage and expanded tests.",
@@ -93,7 +93,7 @@
     "readme": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/blob/main/README.md",
     "globalDependencies": [
       {
-        "admin": ">=7.6.17"
+        "admin": ">=7.6.20"
       }
     ]
   },

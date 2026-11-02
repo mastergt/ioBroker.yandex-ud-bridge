@@ -10,7 +10,7 @@ const io = require('../io-package.json');
 test('platform version requirements match ioBroker catalog rules', () => {
     assert.equal(pkg.engines.node, '>=22.19.0');
     assert.deepEqual(io.common.dependencies, [{ 'js-controller': '>=6.0.11' }]);
-    assert.deepEqual(io.common.globalDependencies, [{ admin: '>=7.6.17' }]);
+    assert.deepEqual(io.common.globalDependencies, [{ admin: '>=7.6.20' }]);
     assert.equal(pkg.dependencies['@iobroker/adapter-core'], '^3.4.3');
     assert.equal(pkg.devDependencies['@iobroker/testing'], '^6.3.1');
     assert.equal(pkg.devDependencies.mocha, undefined, 'Mocha is provided by @iobroker/testing');

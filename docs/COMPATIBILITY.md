@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Node.js | 22.19.0 | Supported runtime and current testing requirements |
 | ioBroker js-controller | 6.0.11 | ioBroker Repository Checker minimum |
-| ioBroker Admin | 7.6.17 | JSON Config and Repository Checker global dependency |
+| ioBroker Admin | 7.6.20 | JSON Config and Repository Checker global dependency |
 
 Check the **ioBroker host** (not your workstation):
 
