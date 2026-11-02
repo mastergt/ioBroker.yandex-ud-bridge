@@ -34,7 +34,6 @@
     ],
     "loglevel": "info",
     "tier": 3,
-    "license": "MIT",
     "authors": [
       "Sergey Batayshchikov"
     ],

@@ -14,6 +14,10 @@ test('public npm package metadata and version are consistent', () => {
   assert.equal(io.version, pkg.version);
   assert.equal(pkg.author, 'Sergey Batayshchikov');
   assert.equal(io.common.authors[0], 'Sergey Batayshchikov');
+  assert.equal(pkg.license, 'MIT');
+  assert.equal(io.common.license, undefined, 'Do not set common.license together with common.licenseInformation');
+  assert.equal(io.common.licenseInformation?.type, 'free');
+  assert.equal(io.common.licenseInformation?.license, pkg.license);
   assert.match(pkg.repository.url, /mastergt\/ioBroker\.yandex-ud-bridge/);
   assert.match(pkg.homepage, /mastergt\/ioBroker\.yandex-ud-bridge/);
   assert.ok(pkg.bugs.url.includes('mastergt/ioBroker.yandex-ud-bridge'));
