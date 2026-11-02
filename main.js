@@ -1,5 +1,6 @@
 'use strict';
 const https = require('node:https');
+const crypto = require('node:crypto');
 const { editable, revision, validatedChange } = require('./lib/tab-config');
 const utils = require('@iobroker/adapter-core');
 const { Adapter } = utils;
@@ -10,6 +11,7 @@ const { createProviderServer } = require('./lib/server');
 const { parseLegacy, convertLegacy } = require('./lib/legacy');
 const { simplifyEnums } = require('./lib/categories');
 const { exportSnapshot, validateSnapshot } = require('./lib/config-backup');
+const {effectiveNetworkConfig,needsMigration,migrationPatch} = require('./lib/network-config');
 class YandexUdBridge extends Adapter {
     constructor(options = {}) {
         super({ ...options, name: 'yandex-ud-bridge' });
@@ -35,13 +37,30 @@ class YandexUdBridge extends Adapter {
                 this.setState('info.lastRequest', { val:`${new Date().toISOString()} ${url}`, ack:true });
             });
             this.server.on('error', err => { this.log.error(`HTTP: ${err.message}`); this.setState('info.connection', {val:false,ack:true}); });
-            this.server.listen(Number(this.config.listenPort || 8096), this.config.listenHost || '127.0.0.1', () => {
-                this.log.info(`Yandex provider: http://${this.config.listenHost || '127.0.0.1'}:${this.config.listenPort || 8096}/provider/v1.0/`);
+            const network = effectiveNetworkConfig(this.config);
+            this.server.listen(network.port, network.bind, () => {
+                this.log.info(`Yandex provider: http://${network.bind}:${network.port}/provider/v1.0/`);
                 this.setState('info.connection', {val:true,ack:true});
             });
             if (!this.oauth.enabled()) this.log.warn('OAuth не настроен; авторизация недоступна до задания client ID, secret и логина.');
-            if (!['127.0.0.1','::1','localhost'].includes(this.config.listenHost || '127.0.0.1')) this.log.warn('HTTP доступен из сети. Рекомендуется localhost + защищённый HTTPS reverse proxy.');
+            // Do not block startup if the controller cannot save the legacy field migration.
+            await this.migrateNetworkSettings();
+            if (!['127.0.0.1','::1','localhost'].includes(network.bind)) this.log.warn('HTTP доступен из сети. Рекомендуется localhost + защищённый HTTPS reverse proxy.');
         } catch (err) { this.log.error(`Startup: ${err.stack || err.message}`); this.setState('info.lastError', {val:String(err.message),ack:true}); }
+    }
+    async migrateNetworkSettings() {
+        try {
+            const instanceId = `system.adapter.${this.namespace}`;
+            const saved = await this.getForeignObjectAsync(instanceId);
+            if (!saved?.native || !needsMigration(saved.native)) return;
+            const patch = migrationPatch(saved.native);
+            // Extending only these four keys leaves devices, bindings and encrypted OAuth
+            // fields unchanged, unlike replacing the complete native configuration.
+            await this.extendForeignObjectAsync(instanceId, {native:patch});
+            this.log.info(`Migrated legacy HTTP listener settings to bind=${patch.bind}, port=${patch.port}.`);
+        } catch (e) {
+            this.log.warn(`Cannot persist legacy HTTP listener migration: ${e.message}. Existing listener remains active.`);
+        }
     }
     async onStateChange(id, state) {
         if (!state || !this.bridge || !(this.bridge.localIndex.has(id)||this.bridge.onlineIndex.has(id))) return;
@@ -77,6 +96,17 @@ class YandexUdBridge extends Adapter {
     async onMessage(msg) {
         if (!msg?.callback) return;
         try {
+            // These commands provide adapter configuration, local object metadata and diagnostics.
+            // They are part of the Admin UI; other adapters must not be able to change
+            // device bindings through sendTo or enumerate the user's ioBroker state tree.
+            const adminOnlyCommands = new Set([
+                'getTabConfig', 'saveTabConfig', 'oauthDiagnostic',
+                'importFile', 'preview', 'categories', 'candidates'
+            ]);
+            if (adminOnlyCommands.has(msg.command) &&
+                !/^(?:system\.adapter\.)?admin\.\d+$/.test(msg.from || '')) {
+                throw new Error('Команды настройки доступны только из ioBroker Admin.');
+            }
             if (msg.command === 'getTabConfig') {
                 // Never expose native credentials to the standalone sidebar UI.
                 const obj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
@@ -84,7 +114,10 @@ class YandexUdBridge extends Adapter {
                 this.sendTo(msg.from, msg.command, {
                     ...editable(obj.native),
                     oauthUserId: String(obj.native.oauthUserId || '1'),
-                    revision: revision(obj.native)
+                    revision: revision(obj.native),
+                    serverHost: effectiveNetworkConfig(this.config).bind,
+                    serverPort: effectiveNetworkConfig(this.config).port,
+                    oauthConfigured: !!(this.config.oauthClientId && this.config.oauthClientSecret && this.config.oauthLogin && this.config.oauthPassword)
                 }, msg.callback);
             } else if (msg.command === 'saveTabConfig') {
                 const id = `system.adapter.${this.namespace}`;
@@ -94,6 +127,29 @@ class YandexUdBridge extends Adapter {
                 // Update only arrays: do not replace OAuth, HTTP, or encrypted native options.
                 await this.extendForeignObjectAsync(id, { native: changed });
                 this.sendTo(msg.from, msg.command, { ok: true, revision: revision(changed) }, msg.callback);
+            } else if (msg.command === 'jsonOAuthBootstrap' || msg.command === 'jsonOAuthRotatePassword') {
+                // JSON Config's sendTo/useNative button is only for the trusted ioBroker Admin UI.
+                if (!/^(?:system\.adapter\.)?admin\.\d+$/.test(msg.from || '')) throw new Error('OAuth setup is only available from ioBroker Admin.');
+                if (msg.command === 'jsonOAuthBootstrap' &&
+                    ['oauthClientId','oauthClientSecret','oauthLogin','oauthPassword'].some(k => this.config[k])) {
+                    throw new Error('OAuth credentials are already configured or partially filled. Existing credentials were not changed.');
+                }
+                const rand = bytes => crypto.randomBytes(bytes).toString('hex');
+                const credentials = msg.command === 'jsonOAuthBootstrap'
+                    ? {oauthClientId:rand(16),oauthClientSecret:rand(32),oauthLogin:'home',oauthPassword:rand(20)}
+                    : {oauthLogin:String(this.config.oauthLogin||'home').trim() || 'home',oauthPassword:rand(20)};
+                // Return values for Admin's UNSAVED edit buffer. The server does not persist or activate
+                // the new credentials until the user explicitly saves the normal JSON Config dialog.
+                // The Admin form replaces its full native edit buffer when `useNative` is set.
+                // Read the latest instance object, because the device editor may have saved
+                // new bindings since the adapter was started. Avoid returning encrypted raw
+                // values: protected fields are taken from the already-decrypted runtime config.
+                const current = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
+                const native = {...this.config,...(current?.native || {}),...credentials};
+                for (const field of ['oauthClientSecret','oauthPassword','callbackOauthToken']) {
+                    if (!Object.hasOwn(credentials, field)) native[field] = this.config[field] || '';
+                }
+                this.sendTo(msg.from,msg.command,{native},msg.callback);
             } else if (msg.command === 'fullBackupExport') {
                 if (!/^(?:system\.adapter\.)?admin\.\d+$/.test(msg.from || '')) throw new Error('Экспорт доступен только из ioBroker Admin.');
                 if (!this.oauth) throw new Error('Хранилище OAuth ещё не готово.');

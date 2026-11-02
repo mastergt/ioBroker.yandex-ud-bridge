@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.3.21
+
+- Added official ioBroker package-file and js-controller integration test suites.
+- Added dedicated CI jobs to run package and integration tests, separate from the fast unit-test matrix.
+- Documented OAuth and HTTP security review findings and publication gates.
+- No changes to device protocol, OAuth credentials or saved user configuration.
+
+## 0.3.18 — Modern Admin sidebar and standard network settings
+
+- Replaced legacy Materialize/FancyTree state selection with an accessible HTML tree/search dialog.
+- Changed the device management sidebar to `adminUI.tab = html` while preserving all existing UI features.
+- Standardized HTTP listener options to `bind` and `port` with automatic migration of earlier custom settings.
+- Added backward-compatible restore of full backups created with `listenHost` and `listenPort`.
+- Expanded compatibility tests, without changing device IDs, mappings, or OAuth token storage.
+
+## 0.3.17 — Admin JSON Config
+
+- Modern JSON Config instance settings for server, OAuth, callbacks and action tracing.
+- Keep the existing device editor, state selector and bidirectional mapping UI in the dedicated Admin tab.
+- Expose full adapter backup/restore and legacy device import from the Admin tab.
+- OAuth credential generation buttons moved into JSON Config; no automatic credential rotation.
+- Existing configuration field names, device bindings and token files are preserved.
+
 ## 0.3.16 — First public release
 
 - Self-hosted Yandex Smart Home provider API and OAuth 2.0 authorization.
@@ -7,3 +30,4 @@
 - Availability controls, optional "Always online" status and action tracing.
 - Adapter settings and OAuth token backup/restore.
 - Optional camera integration via externally hosted HTTPS HLS stream URLs.
+

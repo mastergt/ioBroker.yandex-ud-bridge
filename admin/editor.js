@@ -53,7 +53,7 @@
     const esc = x => String(x == null ? '' : x).replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const attr = esc;
     const bridgeMode = document.documentElement?.dataset?.bridgeMode || document.body?.dataset?.bridgeMode || 'tab';
-    const ui = { tuyaCurtainState:'', oauthDiagnostic:null, oauthDiagnosticBusy:false, view:bridgeMode==='settings'?'server':'devices', selected:null, search:'', editing:null, expert:false, templates:false, smartAdd:false, candidates:[], treeObjects:[], nativePicker:null, nativePickerLoading:false, candidateStatus:'idle', candidateError:'', categories:{rooms:[],functions:[]},categoryStatus:'idle',categoryError:'', feedbackExtra:new WeakSet(), changed:null, data:null };
+    const ui = { tuyaCurtainState:'', oauthDiagnostic:null, oauthDiagnosticBusy:false, view:bridgeMode==='settings'?'server':'devices', selected:null, search:'', editing:null, expert:false, templates:false, smartAdd:false, candidates:[], treeObjects:[], pickerPath:null, pickerFolder:'', pickerQuery:'', candidateStatus:'idle', candidateError:'', categories:{rooms:[],functions:[]},categoryStatus:'idle',categoryError:'', feedbackExtra:new WeakSet(), changed:null, data:null };
     function notify(text, kind='') {
         const el = document.querySelector('#notice'); if (!el) return;
         el.hidden = !text; el.className = `notice ${kind}`; el.textContent = text;
@@ -103,10 +103,12 @@
             } else {
                 ui.candidates = result.filter(c => c.objectType === 'state' || !c.objectType);
                 ui.candidateStatus = ui.candidates.length ? 'ready' : 'empty';
+                renderStateBrowser();
             }
         }, message => {
             ui.candidateStatus = 'error'; ui.candidateError = message;
             notify(`Не удалось получить объекты ioBroker: ${message}`, 'error');
+            renderStateBrowser();
         });
     }
     const roomText = {
@@ -228,59 +230,111 @@
             ${val?`<button type="button" class="btn secondary small clear-state" data-action="clear-state" data-path="${attr(id)}" title="Очистить">×</button>`:''}
         </div>${help?`<div class="tiny-help">${esc(help)}</div>`:''}${categoryHint(val)}</div>`;
     }
-    // The editor uses ioBroker Admin's own Materialize selectID component.
-    // It is shipped by Admin (selectID.js / FancyTree), not rendered by our adapter.
-    function openNativePicker(path) {
-        if(ui.nativePickerLoading) return;
-        const jq = window.jQuery || window.$;
-        if(typeof jq !== 'function' || typeof jq.fn?.selectId !== 'function') {
-            notify('Не загрузился штатный выбор объектов ioBroker (selectID.js). Проверь вкладку Network в инструментах разработчика Admin.', 'error');
-            return;
-        }
-        const current=path.startsWith('primary.')?mainObject(ui.data.bindings[Number(path.split('.')[1])]||{}):path==='smartState'?ui.smartState||'':path==='tuyaCurtainState'?ui.tuyaCurtainState||'':locate(path)?.obj?.[locate(path).key]||'';
-        const show=()=>{
-            try {
-                ui.nativePicker.selectId('show',current,newId=>{
-                    if(typeof newId === 'string' && newId.trim()) setPickedState(path,newId.trim());
-                });
-            } catch(err) { notify('Не удалось открыть штатный выбор: '+err.message,'error'); }
-        };
-        if(ui.nativePicker) { show(); return; }
-        if(typeof window.socket?.emit !== 'function') {
-            notify('Нет соединения с ioBroker Admin: socket.getObjects недоступен.','error');
-            return;
-        }
-        ui.nativePickerLoading=true;
-        // The native selectID plugin requires full ioBroker objects, not the
-        // compact state summaries returned by the adapter's candidates API.
-        window.socket.emit('getObjects',(err,objects)=>{
-            ui.nativePickerLoading=false;
-            if(err || !objects || typeof objects !== 'object') {
-                notify('Не удалось получить объекты для штатного диалога: '+(err?.message||err||'пустой ответ'),'error');
-                return;
-            }
-            try {
-                const container=jq('#dialog-select-member');
-                ui.nativePicker=container.selectId('init',{
-                    noMultiselect:true,
-                    objects,
-                    imgPath:'../../lib/css/fancytree/',
-                    filter:{type:'state'},
-                    name:'yandex-ud-bridge-select-state',
-                    columns:['image','name','role','room'],
-                    texts:{
-                        select:'Выбрать',cancel:'Отмена',all:'Все',id:'ID',
-                        name:'Название',role:'Роль',room:'Комната',value:'Значение',
-                        selectid:'Выберите ID объекта',from:'От',lc:'Последнее изменение',
-                        ts:'Время',wait:'Загрузка…',ack:'Подтверждено',
-                        selectAll:'Выбрать всё',unselectAll:'Снять выделение',
-                        invertSelection:'Инвертировать выбор'
-                    }
-                }) || container;
-                show();
-            } catch(e) { ui.nativePicker=null;notify('Ошибка штатного выбора ioBroker: '+e.message,'error'); }
-        });
+    // HTML state browser backed by the adapter's candidates API. A bounded result list
+    // avoids rendering tens of thousands of ioBroker nodes in the browser at once.
+    function currentPickedValue(path) {
+        if (path.startsWith('primary.')) return mainObject(ui.data.bindings[Number(path.split('.')[1])] || {});
+        if (path === 'smartState') return ui.smartState || '';
+        if (path === 'tuyaCurtainState') return ui.tuyaCurtainState || '';
+        const field = locate(path);
+        return field ? field.obj[field.key] || '' : '';
     }
+    function openNativePicker(path) {
+        const dialog = document.getElementById('state-picker-dialog');
+        if (!dialog) { notify('Не найден диалог выбора состояний. Обновите страницу Admin.', 'error'); return; }
+        ui.pickerPath = path;
+        ui.pickerQuery = '';
+        const current = currentPickedValue(path);
+        ui.pickerFolder = current ? current.split('.').slice(0, -1).join('.') : '';
+        const input = document.getElementById('state-picker-search');
+        if (input) input.value = '';
+        renderStateBrowser();
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else { dialog.hidden = false; dialog.setAttribute('open', ''); }
+        if (input && typeof input.focus === 'function') input.focus();
+    }
+    function closeStateBrowser() {
+        const dialog = document.getElementById('state-picker-dialog');
+        if (dialog) {
+            if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+            else { dialog.hidden = true; dialog.removeAttribute?.('open'); }
+        }
+        ui.pickerPath = null;
+    }
+    function renderStateBrowser() {
+        if (ui.pickerPath == null) return;
+        const host = document.getElementById('state-picker-results');
+        if (!host) return;
+        const path = ui.pickerFolder;
+        const query = ui.pickerQuery.trim().toLocaleLowerCase('ru');
+        const states = ui.candidates || [];
+        const pathNode = document.getElementById('state-picker-path');
+        const count = document.getElementById('state-picker-count');
+        if (pathNode) pathNode.textContent = query ? 'Поиск по всем состояниям' : path || 'Все объекты';
+        const back = document.getElementById('state-picker-up');
+        if (back) back.disabled = !path || !!query;
+        if (ui.candidateStatus === 'loading' || ui.candidateStatus === 'idle') {
+            host.innerHTML = '<div class="state-dialog-empty">Загрузка состояний ioBroker…</div>';
+            return;
+        }
+        if (ui.candidateStatus === 'error') {
+            host.innerHTML = `<div class="state-dialog-empty">${esc(ui.candidateError)}</div>`;
+            return;
+        }
+        let html = '';
+        let shown = 0;
+        let total = 0;
+        const LIMIT = 250;
+        if (query) {
+            const current = currentPickedValue(ui.pickerPath);
+            for (const state of states) {
+                if (!(String(state.id)+' '+String(state.name||'')+' '+String(state.role||'')).toLocaleLowerCase('ru').includes(query)) continue;
+                if (shown++ < LIMIT) html += stateBrowserRow(state, state.id === current);
+            }
+            total = shown;
+        } else {
+            const prefix = path ? path + '.' : '';
+            const groups = new Set();
+            const current = currentPickedValue(ui.pickerPath);
+            for (const state of states) {
+                if (!state.id.startsWith(prefix)) continue;
+                const tail = state.id.slice(prefix.length);
+                const dot = tail.indexOf('.');
+                if (dot >= 0) groups.add(prefix + tail.slice(0,dot));
+                else if (shown++ < LIMIT) html += stateBrowserRow(state, state.id === current);
+            }
+            const dirs = [...groups].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+            total = dirs.length + shown;
+            // Limit DOM size; all folders remain accessible by filtering.
+            html = dirs.slice(0,LIMIT).map(dir=>`<button type="button" class="state-dialog-row state-dir" data-state-folder="${attr(dir)}"><b>▸ ${esc(dir.slice(prefix.length))}</b><small>${esc(dir)}</small></button>`).join('') + html;
+            if (dirs.length > LIMIT) shown += dirs.length-LIMIT;
+        }
+        if (count) count.textContent = `${total} найдено${total > LIMIT ? ' · показаны первые '+LIMIT : ''}`;
+        host.innerHTML = html || '<div class="state-dialog-empty">Нет подходящих состояний. Попробуйте поиск.</div>';
+    }
+    function stateBrowserRow(state, selected) {
+        const index = ui.candidates.indexOf(state);
+        return `<button type="button" class="state-dialog-row state-leaf ${selected?'state-selected':''}" data-state-index="${index}" role="option" aria-selected="${selected}"><b>${esc(state.id)}</b><span>${esc(state.name||state.id)} · ${esc(state.role||'state')} · ${esc(state.type||'')}</span>${state.write===false?'<small>Только чтение</small>':''}</button>`;
+    }
+    document.addEventListener('click', event => {
+        const folder = event.target.closest?.('[data-state-folder]');
+        if (folder) { ui.pickerFolder = folder.dataset.stateFolder; renderStateBrowser(); return; }
+        const state = event.target.closest?.('[data-state-index]');
+        if (state && ui.pickerPath != null) {
+            const item = ui.candidates[Number(state.dataset.stateIndex)];
+            if (item) { const path = ui.pickerPath; closeStateBrowser(); setPickedState(path,item.id); }
+        }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('state-picker-search');
+        if (input) input.addEventListener('input', () => { ui.pickerQuery = input.value; renderStateBrowser(); });
+        document.getElementById('state-picker-up')?.addEventListener('click', () => {
+            ui.pickerFolder = ui.pickerFolder.split('.').slice(0,-1).join('.');
+            renderStateBrowser();
+        });
+        document.getElementById('state-picker-close')?.addEventListener('click', closeStateBrowser);
+        document.getElementById('state-picker-dialog')?.addEventListener('close', () => { ui.pickerPath = null; });
+    });
     function setPickedState(path,value) {
         const primary=path.match(/^primary\.(\d+)$/);
         const found=primary?null:locate(path);
@@ -686,7 +740,7 @@
         document.querySelector('#top-action').innerHTML = '';
         const d=ui.data;
         let h='';
-        if (ui.view==='server') h=`<div class="panel"><h2>HTTP API провайдера</h2><div class="fields">${textField('Интерфейс прослушивания','listenHost',d.listenHost||'127.0.0.1',{help:'Рекомендуется 127.0.0.1 и HTTPS reverse proxy'})}${textField('Порт','listenPort',d.listenPort||8096,{number:true})}${textField('Публичный HTTPS-адрес','publicBaseUrl',d.publicBaseUrl||'',{class:'span-all',placeholder:'https://smart.example.ru',help:'Нужен только для формирования готовых URL в настройках OAuth; не настраивает nginx автоматически.'})}</div><div class="hint">Все обращения Яндекса направляются в новый адаптер. Старый yandex2mqtt больше не нужен.</div></div><div class="panel"><h2>Адреса для настройки навыка</h2>${oauthUrlCard(d)}</div>`;
+        if (ui.view==='server') h=`<div class="panel"><h2>HTTP API провайдера</h2><div class="fields">${textField('Интерфейс прослушивания','listenHost',d.serverHost||d.bind||'127.0.0.1',{help:'Рекомендуется 127.0.0.1 и HTTPS reverse proxy'})}${textField('Порт','listenPort',d.serverPort||d.port||8096,{number:true})}${textField('Публичный HTTPS-адрес','publicBaseUrl',d.publicBaseUrl||'',{class:'span-all',placeholder:'https://smart.example.ru',help:'Нужен только для формирования готовых URL в настройках OAuth; не настраивает nginx автоматически.'})}</div><div class="hint">Все обращения Яндекса направляются в новый адаптер. Старый yandex2mqtt больше не нужен.</div></div><div class="panel"><h2>Адреса для настройки навыка</h2>${oauthUrlCard(d)}</div>`;
         else if (ui.view==='auth') h=`<div class="panel">
             <div class="detail-head"><div><h2>OAuth: подключение Яндекса</h2><p class="muted">Есть две разные пары реквизитов: для Яндекса и для входа на страницу разрешения доступа.</p></div>
             <button class="btn" data-action="oauth-generate" ${!oauthSetup?.allEmpty(d)?'disabled title="Уже есть настройки OAuth — генерация полного комплекта заблокирована"':''}>⚡ Первоначальная настройка</button></div>
@@ -704,7 +758,7 @@
             <div class="divider-line"></div><h2>Готовые адреса для Яндекса</h2>${oauthUrlCard(d)}
             <div class="hint"><b>Важно:</b> изменение Client ID или Secret потребует обновить опубликованный навык. Изменение пароля для входа не меняет уже выданные OAuth-токены.</div></div>`;
         else if (ui.view==='migration') h=`<div class="panel"><h2>Импорт старого config.js</h2><p>Выбери файл со своего компьютера. Импортируются только устройства, функции и названия. OAuth, логины, пароли, MQTT-подключение, сертификаты и остальные настройки игнорируются.</p><div class="button-row"><button class="btn" data-action="import-file">⇢ Выбрать config.js</button><span class="muted">Максимальный размер: 2 МБ</span></div><div class="hint">MQTT-привязки не используются: в карточке импортированного устройства будут подсказки со старыми топиками. Для работы выбери соответствующие состояния ioBroker.</div></div>`;
-        else if (ui.view==='diagnostic') h=`<div class="panel"><div class="detail-head"><div><h2>Предпросмотр для Яндекса</h2><p class="muted">Проверьте описание устройств без изменения их состояния</p></div><button class="btn" data-action="preview">Обновить JSON</button></div><p class="muted">Предпросмотр включает только включённые и подключённые функции. Это конфигурация до сохранения; реальные команды не выполняются.</p><pre id="preview-result">Нажмите «Обновить JSON»</pre></div><div class="panel"><h2>Проверка подключения</h2><ul class="status-list"><li>HTTP: <code>${esc(d.listenHost||'127.0.0.1')}:${esc(d.listenPort||8096)}</code></li><li>OAuth: ${d.oauthClientId&&d.oauthClientSecret&&d.oauthLogin&&d.oauthPassword?'Настроен':'Нужно заполнить Client ID, secret и пароль'}</li><li>Устройства: ${d.devices.length}</li><li>Активные функции: ${d.bindings.filter(b=>b.enabled&&(b.stateId||b.commandId||b.streamUrl)).length}</li></ul></div>`;
+        else if (ui.view==='diagnostic') h=`<div class="panel"><div class="detail-head"><div><h2>Предпросмотр для Яндекса</h2><p class="muted">Проверьте описание устройств без изменения их состояния</p></div><button class="btn" data-action="preview">Обновить JSON</button></div><p class="muted">Предпросмотр включает только включённые и подключённые функции. Это конфигурация до сохранения; реальные команды не выполняются.</p><pre id="preview-result">Нажмите «Обновить JSON»</pre></div><div class="panel"><h2>Проверка подключения</h2><ul class="status-list"><li>HTTP: <code>${esc(d.serverHost||d.serverHost||d.bind||'127.0.0.1')}:${esc(d.serverPort||d.serverPort||d.port||8096)}</code></li><li>OAuth: ${(d.oauthConfigured===true || (d.oauthClientId&&d.oauthClientSecret&&d.oauthLogin&&d.oauthPassword))?'Настроен':'Нужно заполнить Client ID, secret и пароль'}</li><li>Устройства: ${d.devices.length}</li><li>Активные функции: ${d.bindings.filter(b=>b.enabled&&(b.stateId||b.commandId||b.streamUrl)).length}</li></ul></div>`;
         else if (ui.view==='backup') h=`<div class="panel"><h2>Полное резервное копирование</h2>
             <p class="muted">В одном файле сохраняются настройки сервера, все устройства и привязки, схемы преобразований, OAuth-реквизиты, callback-настройки и действующие OAuth-токены.</p>
             <div class="hint"><b>Секретные данные!</b> Файл содержит пароли, OAuth Client Secret и токены доступа в открытом виде. Храни его в защищённом месте, не публикуй и не передавай посторонним.</div>
@@ -902,7 +956,6 @@
             }
             ui.editing=ui.data.bindings.length-1;touch();render();
         } else if (action==='full-backup-export') {
-            if (bridgeMode !== 'settings') return;
             send('fullBackupExport', {}, backup => {
                 if (backup?.format !== 'iobroker.yandex-ud-bridge.full-backup') {
                     notify('Получен неверный формат резервной копии.', 'error');return;
@@ -919,7 +972,6 @@
                 notify(`Создан полный бэкап: ${backup.native.devices.length} устройств, ${backup.native.bindings.length} функций. Не передавай файл посторонним.`, 'ok');
             });
         } else if (action==='full-backup-import') {
-            if (bridgeMode !== 'settings') return;
             document.querySelector('#backup-file')?.click();
         } else if (action==='oauth-diagnostic') {
             if (ui.oauthDiagnosticBusy) return;

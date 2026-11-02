@@ -70,6 +70,7 @@ test('onReady uses adapter-core getAbsoluteInstanceDataDir and starts the provid
         './lib/categories': require('../lib/categories'),
         './lib/tab-config': require('../lib/tab-config'),
         './lib/config-backup': require('../lib/config-backup'),
+        './lib/network-config': require('../lib/network-config'),
         './package.json': require('../package.json')
     };
     const fakeRequire = id => imports[id] || require(id);
@@ -91,6 +92,16 @@ test('onReady uses adapter-core getAbsoluteInstanceDataDir and starts the provid
     assert.equal(returned.oauthPassword,undefined);
     assert.equal(returned.oauthClientSecret,undefined);
     assert.equal(returned.devices[0].id,'light');
+    // Prevent non-Admin adapters from reading or mutating device mappings.
+    await adapter.onMessage({command:'getTabConfig',callback:'cb-untrusted-read',from:'other.0',message:{}});
+    assert.match(adapter.replies.at(-1)[2].error,/только из ioBroker Admin/);
+    await adapter.onMessage({command:'saveTabConfig',callback:'cb-untrusted-write',from:'other.0',message:{
+        revision:returned.revision,devices:[],bindings:[]
+    }});
+    assert.match(adapter.replies.at(-1)[2].error,/только из ioBroker Admin/);
+    assert.equal(adapter.instanceNative.devices[0].id,'light');
+    await adapter.onMessage({command:'candidates',callback:'cb-untrusted-objects',from:'other.0',message:{}});
+    assert.match(adapter.replies.at(-1)[2].error,/только из ioBroker Admin/);
     await adapter.onMessage({command:'saveTabConfig',callback:'cb-3',from:'admin.0',message:{
         revision:returned.revision,devices:[{id:'light',name:'Updated'}],bindings:[]
     }});
@@ -102,6 +113,34 @@ test('onReady uses adapter-core getAbsoluteInstanceDataDir and starts the provid
     }});
     assert.match(adapter.replies.at(-1)[2].error,/изменена/);
     assert.equal(adapter.instanceNative.devices.length,1);
+    // JSON Config OAuth generator must reject unknown senders and existing credentials.
+    await adapter.onMessage({command:'jsonOAuthBootstrap',callback:'cb-forbidden',from:'other.0',message:{}});
+    assert.match(adapter.replies.at(-1)[2].error, /only available/);
+    await adapter.onMessage({command:'jsonOAuthBootstrap',callback:'cb-exists',from:'admin.0',message:{}});
+    assert.match(adapter.replies.at(-1)[2].error, /already configured/);
+    const oldSecret = adapter.config.oauthClientSecret;
+    await adapter.onMessage({command:'jsonOAuthRotatePassword',callback:'cb-password',from:'admin.0',message:{}});
+    const rotated = adapter.replies.at(-1)[2];
+    assert.equal(rotated.native.oauthClientSecret, oldSecret);
+    assert.equal(rotated.native.oauthLogin, 'user');
+    assert.match(rotated.native.oauthPassword, /^[0-9a-f]{40}$/);
+    assert.equal(rotated.native.devices[0].id, 'light', 'the wizard must preserve the latest saved devices');
+    assert.equal(adapter.config.oauthPassword, 'password', 'generation must not alter live credentials before Admin Save');
+    adapter.config.oauthClientId = '';
+    adapter.config.oauthClientSecret = '';
+    adapter.config.oauthLogin = '';
+    adapter.config.oauthPassword = '';
+    await adapter.onMessage({command:'jsonOAuthBootstrap',callback:'cb-new',from:'admin.0',message:{}});
+    const created = adapter.replies.at(-1)[2];
+    assert.match(created.native.oauthClientId, /^[0-9a-f]{32}$/);
+    assert.match(created.native.oauthClientSecret, /^[0-9a-f]{64}$/);
+    assert.match(created.native.oauthPassword, /^[0-9a-f]{40}$/);
+    assert.equal(created.native.oauthLogin, 'home');
+    assert.equal(adapter.config.oauthClientId, '', 'new credentials are not active until Admin saves');
+    adapter.config.oauthClientId = 'client';
+    adapter.config.oauthClientSecret = 'secret';
+    adapter.config.oauthLogin = 'user';
+    adapter.config.oauthPassword = 'password';
     await adapter.onMessage({command:'oauthDiagnostic',callback:'cb-diagnostic',from:'admin.0',message:{oauthPassword:'injected'}});
     const diag = adapter.replies.at(-1)[2];
     assert.equal(diag.ok,true);

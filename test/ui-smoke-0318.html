@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru" data-bridge-mode="tab">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="words.js"></script>
+<link rel="stylesheet" href="../admin/editor.css">
+<script src="../admin/editor.js"></script>
+
+</head>
+<body data-bridge-mode="tab">
+<div class="bridge-root">
+  <aside class="rail">
+    <div class="brand"><div class="brand-icon">⌂</div><div><b>Яндекс · Bridge</b><small>Устройства ioBroker</small></div></div>
+    <button class="nav is-selected" data-view="devices">▦ &nbsp; Устройства</button>
+    <button class="nav" data-view="diagnostic">◈ &nbsp; Проверка</button>
+    <button class="nav" data-view="migration">⇢ &nbsp; Импорт config.js</button>
+    <button class="nav" data-view="backup">▣ &nbsp; Резервная копия</button>
+    <div class="rail-foot"><span class="pulse"></span> Локальный адаптер<br><small>Никакого yandex2mqtt</small></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar"><div><div class="eyebrow" id="breadcrumb">МОИ УСТРОЙСТВА</div><h1 id="page-heading">Устройства</h1><p id="page-subtitle">Управляйте тем, что увидит Алиса</p></div><div class="tab-toolbar"><span id="tab-save-state" role="status">Загрузка конфигурации…</span><button class="btn secondary" id="tab-reload" type="button">Обновить</button><button class="btn" id="tab-save" type="button" disabled>Сохранить изменения</button></div><div id="top-action"></div></header>
+    <div class="notice" id="notice" role="status" hidden></div>
+    <section id="content" aria-live="polite"></section>
+    <div class="bottom-hint" id="save-hint">Изменения сохраняются кнопкой «Сохранить изменения». Параметры OAuth и сервера — в настройках экземпляра.</div>
+  </main>
+</div>
+<input id="config-file" type="file" accept=".js,.txt,text/plain,application/javascript" hidden>
+<input id="backup-file" type="file" accept=".json,application/json" hidden>
+<!-- Standalone accessible object-state browser. -->
+<dialog id="state-picker-dialog" class="state-dialog" aria-labelledby="state-picker-heading">
+  <div class="state-dialog-header"><h2 id="state-picker-heading">Выбор состояния ioBroker</h2><button class="btn secondary small" type="button" id="state-picker-close" aria-label="Закрыть">✕</button></div>
+  <input id="state-picker-search" type="search" placeholder="Поиск по ID, названию и роли…" autocomplete="off" aria-label="Поиск состояний">
+  <div class="state-dialog-tools"><button class="btn secondary small" id="state-picker-up" type="button">← Выше</button><span id="state-picker-path">Все объекты</span><span id="state-picker-count"></span></div>
+  <div id="state-picker-results" class="state-dialog-results" role="listbox" aria-label="Список состояний ioBroker"></div>
+  <p class="tiny-help">Нажмите на состояние, чтобы выбрать его. Esc или ✕ — отмена.</p>
+</dialog>
+<div id="smoke-result">pending</div>
+<script>
+window.instance = 0;
+window.sendTo = (_inst,cmd,_params,cb)=>{
+ if (cmd==='candidates') return cb([
+  {id:'zigbee.0.kitchen.on',objectType:'state',name:'Лампа',role:'switch',type:'boolean',write:true},
+  {id:'zigbee.0.kitchen.available',objectType:'state',name:'Доступность',role:'indicator.connected',type:'boolean',write:false}
+ ]);
+ if (cmd==='categories') return cb({rooms:[],functions:[]});
+ throw Error('unexpected '+cmd);
+};
+window.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+ const info=[];
+ try {
+   window.load({oauthUserId:'1',devices:[{id:'lamp',name:'Lamp',type:'devices.types.light',onlineStateId:'',enabled:true}],bindings:[]},()=>{});
+   const picker=document.querySelector('[data-action="pick-state"]');
+   if (!picker) { document.querySelector('[data-action="open"]').click(); }
+   document.querySelector('[data-action="open"]')?.click();
+   document.querySelector('[data-action="toggle-availability"]')?.click();
+   const available=document.querySelector('[data-action="pick-state"][data-path="devices.0.onlineStateId"]');
+   if (!available) throw Error('availability picker button missing');
+   available.click();
+   info.push('dialog:'+document.querySelector('#state-picker-dialog').open);
+   const input=document.querySelector('#state-picker-search');
+   input.value='Доступность';input.dispatchEvent(new Event('input',{bubbles:true}));
+   info.push('query:'+document.querySelectorAll('[data-state-index]').length);
+   const result=[...document.querySelectorAll('[data-state-index]')].find(x=>x.textContent.includes('available'));
+   if (!result) throw Error('matching item missing');
+   result.click();
+   let current;window.save(data=>current=data);
+   info.push('saved:'+current.devices[0].onlineStateId);
+ } catch (e) {info.push('ERROR:'+e.stack);}
+ document.getElementById('smoke-result').textContent=info.join(' | ');
+},150));
+</script>
+</body>
+</html>

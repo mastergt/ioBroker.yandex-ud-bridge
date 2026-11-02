@@ -1,6 +1,6 @@
 {
   "name": "iobroker.yandex-ud-bridge",
-  "version": "0.3.16",
+  "version": "0.3.21",
   "description": "Expose ioBroker devices to Yandex Smart Home through a self-hosted OAuth 2.0 provider bridge",
   "main": "main.js",
   "license": "MIT",
@@ -21,8 +21,11 @@
     "@iobroker/adapter-core": "^3.3.2"
   },
   "scripts": {
-    "test": "node --test test/*.test.js",
-    "check": "node --check main.js && node --check lib/bridge.js && node --check lib/transforms.js && node --check lib/server.js && node --check lib/oauth.js && node --check lib/legacy.js && node --check lib/categories.js && node --check admin/editor.js && node --check admin/tab-controller.js && node --check admin/oauth-setup.js && node --check lib/diagnostics.js && node --check lib/action-trace.js && node --check lib/config-backup.js"
+    "test": "npm run test:unit",
+    "check": "node --check main.js && node --check lib/bridge.js && node --check lib/transforms.js && node --check lib/server.js && node --check lib/oauth.js && node --check lib/legacy.js && node --check lib/categories.js && node --check admin/editor.js && node --check admin/tab-controller.js && node --check admin/oauth-setup.js && node --check lib/diagnostics.js && node --check lib/action-trace.js && node --check lib/config-backup.js && node --check lib/network-config.js",
+    "test:unit": "node --test test/*.test.js",
+    "test:package": "mocha test/package.js --exit --timeout 120000",
+    "test:integration": "mocha test/integration.js --exit --timeout 240000"
   },
   "files": [
     "main.js",
@@ -42,5 +45,9 @@
   "homepage": "https://github.com/mastergt/ioBroker.yandex-ud-bridge#readme",
   "bugs": {
     "url": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/issues"
+  },
+  "devDependencies": {
+    "@iobroker/testing": "^5.2.2",
+    "mocha": "^11.7.5"
   }
 }

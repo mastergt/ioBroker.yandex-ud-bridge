@@ -8,10 +8,11 @@ const vm = require('node:vm');
 function page(settings) {
     const nodes = new Map(), events = new Map(), calls = [];
     function node(sel) {
-        if (!nodes.has(sel)) nodes.set(sel, {innerHTML:'',textContent:'',hidden:true,className:'',value:'',classList:{toggle(){}}});
+        if (!nodes.has(sel)) nodes.set(sel, {innerHTML:'',textContent:'',hidden:true,className:'',value:'',open:false,showModal(){this.open=true;},close(){this.open=false;},setAttribute(){},removeAttribute(){},focus(){},classList:{toggle(){}}});
         return nodes.get(sel);
     }
-    let selectCallback;
+    let selectedId;
+    const states=[{id:'zigbee.0.hall.relay.on',name:'Hall relay',role:'switch',type:'boolean',write:true,objectType:'state'}];
     const jquery=()=>({selectId(command,...args){
         if (command==='show') selectCallback=args[1];
         return this;
@@ -30,7 +31,7 @@ function page(settings) {
             assert.equal(name,'getObjects');callback(null,fullObjects);
         }},sendTo(_instance,cmd,_params,callback){
             calls.push(cmd);
-            if(cmd==='candidates')callback([{id:'zigbee.0.hall.relay.on',name:'Hall relay',role:'switch',type:'boolean',write:true,objectType:'state'}]);
+            if(cmd==='candidates')callback(states);
             else if(cmd==='categories')callback(categories);
             else throw Error('Unexpected request: '+cmd);
         }},
@@ -51,7 +52,10 @@ function page(settings) {
         for(const cb of events.get('change')||[])cb(e);
     };
     const save=()=>{let result;sandbox.window.save(data=>{result=data});return result;};
-    return {calls,click,selectRoom,save,chooseState:id=>selectCallback(id),nodes};
+    return {calls,click,selectRoom,save,chooseState:id=>{
+        const index=states.findIndex(s=>s.id===id); assert.ok(index>=0);
+        for(const cb of events.get('click')||[])cb({target:{closest:sel=>sel==='[data-state-index]'?{dataset:{stateIndex:String(index)}}:null},preventDefault(){}});
+    },nodes};
 }
 
 test('smart add infers room from device membership and type from function category',()=>{

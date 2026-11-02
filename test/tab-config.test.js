@@ -20,14 +20,14 @@ test('sidebar config exposes only devices/bindings, never OAuth secrets',()=>{
 
 test('Admin sidebar ships tab_m.html, native selectID, scoped editor and adminTab',()=>{
     const cfg=require('../io-package.json');
-    assert.equal(cfg.common.adminUI.tab,'materialize');
+    assert.equal(cfg.common.adminUI.tab,'html');
     assert.equal(cfg.common.adminTab.link,'/adapter/yandex-ud-bridge/tab_m.html');
     assert.ok(cfg.common.adminTab.link.startsWith('/adapter/'+cfg.common.name+'/'));
     assert.ok(fs.existsSync(path.join(__dirname,'../admin',path.posix.basename(cfg.common.adminTab.link))), 'sidebar target must exist among uploaded admin files');
     assert.equal(cfg.common.adminTab.singleton,true);
     const tab=fs.readFileSync(path.join(__dirname,'../admin/tab_m.html'),'utf8');
     const settings=fs.readFileSync(path.join(__dirname,'../admin/index_m.html'),'utf8');
-    for(const part of ['tab-controller.js','editor.js','selectID.js','data-view="devices"','data-view="diagnostic"'])assert.ok(tab.includes(part),`missing ${part}`);
+    for(const part of ['tab-controller.js','editor.js','state-picker-dialog','data-view="devices"','data-view="diagnostic"'])assert.ok(tab.includes(part),`missing ${part}`);
     assert.doesNotMatch(tab,/data-view="auth"|data-view="server"/);
     assert.match(settings,/data-view="auth"/);
     assert.match(settings,/data-view="migration"/);
