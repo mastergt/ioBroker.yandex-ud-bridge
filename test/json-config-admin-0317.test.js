@@ -33,7 +33,7 @@ test('Admin 3 JSON configuration has all supported instance settings and protect
   assert.equal(schema.items.oauth.items._createOAuth.useNative, true);
   assert.equal(schema.items.oauth.items._rotateLogin.command, 'jsonOAuthRotatePassword');
   assert.equal(schema.items.oauth.items._rotateLogin.useNative, true);
-  assert.equal(pkg.version, io.version);
+  assert.equal(io.version, undefined);
   assert.equal(pkg.version, io.common.version);
 });
 

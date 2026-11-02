@@ -1,14 +1,15 @@
 {
   "name": "iobroker.yandex-ud-bridge",
-  "version": "0.3.22",
+  "version": "0.3.23",
   "description": "Expose ioBroker devices to Yandex Smart Home through a self-hosted OAuth 2.0 provider bridge",
   "main": "main.js",
   "license": "MIT",
-  "author": "Sergey Batayshchikov",
+  "author": "Sergey Batayshchikov <mastergt@mail.ru>",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.19.0"
   },
   "keywords": [
+    "ioBroker",
     "iobroker",
     "iobroker-adapter",
     "yandex",
@@ -18,7 +19,7 @@
     "oauth2"
   ],
   "dependencies": {
-    "@iobroker/adapter-core": "^3.3.2"
+    "@iobroker/adapter-core": "^3.4.3"
   },
   "scripts": {
     "test": "npm run test:unit",
@@ -47,7 +48,6 @@
     "url": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/issues"
   },
   "devDependencies": {
-    "@iobroker/testing": "^5.2.2",
-    "mocha": "^11.7.5"
+    "@iobroker/testing": "^6.3.1"
   }
 }

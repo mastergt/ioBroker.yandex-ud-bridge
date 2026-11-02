@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.23
+
+- Require Node.js 22.19+, js-controller 6.0.11+ and Admin 7.6.20+ for upcoming ioBroker catalog compliance.
+- Move Admin from same-host dependency to global dependency and update adapter-core/testing.
+- Test supported Node.js 22 and 24 runners in CI. No changes to persisted native settings.
+
 ## 0.3.22
 
 - Harden OAuth login throttling behind opt-in trusted local Nginx proxy via `X-Real-IP`.
