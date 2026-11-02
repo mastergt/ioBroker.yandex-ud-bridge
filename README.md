@@ -192,6 +192,11 @@ for an additional rate limiter on OAuth endpoints.
 
 ## Changelog
 
+### 0.3.23
+
+- Update platform requirements to Node.js 22.19+, js-controller 6.0.11+ and Admin 7.6.17+.
+- Upgrade ioBroker testing dependencies and support Node.js 22/24 in CI. See [compatibility notes](docs/COMPATIBILITY.md).
+
 ### 0.3.22
 
 - Security hardening for OAuth behind a trusted local Nginx reverse proxy.

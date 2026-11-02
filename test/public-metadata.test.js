@@ -31,7 +31,7 @@ test('public npm package metadata and version are consistent', () => {
 
 test('only public release history is included in ioBroker metadata', () => {
   const io = load('io-package.json');
-  assert.deepEqual(Object.keys(io.common.news), [io.common.version, '0.3.21', '0.3.20', '0.3.16']);
+  assert.deepEqual(Object.keys(io.common.news), [io.common.version, '0.3.22', '0.3.21', '0.3.20', '0.3.16']);
   for (const f of ['LICENSE','CHANGELOG.md','io-package.json','package.json']) {
     const content = fs.readFileSync(path.join(root, f), 'utf8');
     assert.doesNotMatch(content, /Community prototype/i, f);

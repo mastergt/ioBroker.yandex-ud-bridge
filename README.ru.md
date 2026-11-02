@@ -219,3 +219,6 @@ npm pack --dry-run
 ## License
 
 MIT — см. [LICENSE](LICENSE). Copyright (c) 2026 Sergey Batayshchikov <mastergt@mail.ru>.
+
+
+**Для обновления до v0.3.23:** проверьте минимальные версии Node.js 22.19+, js-controller 6.0.11+ и Admin 7.6.17+. Подробности: [совместимость](docs/COMPATIBILITY.md).
