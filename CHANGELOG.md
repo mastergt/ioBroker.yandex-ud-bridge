@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.22
+
+- Harden OAuth login throttling behind opt-in trusted local Nginx proxy via `X-Real-IP`.
+- Keep forwarded headers untrusted by default and reject remote/non-IP proxy headers.
+- Bound OAuth login failure buckets and pending authorization request count.
+- Add security regression tests and an advisory repository-checker CI job.
+
 ## 0.3.21
 
 - Added official ioBroker package-file and js-controller integration test suites.

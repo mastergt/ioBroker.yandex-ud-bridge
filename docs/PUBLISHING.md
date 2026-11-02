@@ -55,3 +55,9 @@ This is a maintainer checklist, **not** an indication that the adapter is alread
 ## Current blockers after metadata cleanup
 
 Instance settings use **JSON Config** and the device tab now uses vanilla **HTML/CSS/JS** without Materialize. The server uses standard `bind`/`port` with a legacy migration. Remaining: official review of the optional Admin sidebar and package/integration CI. Its network-exposed OAuth/HTTP code also needs a dedicated security review; see [SECURITY_REVIEW.md](SECURITY_REVIEW.md). Preserve existing settings and stored credentials during any migration. This document is a checklist, not a publication approval.
+
+## Repository Checker (advisory before npm publication)
+
+Official CLI: `npx @iobroker/repochecker https://github.com/mastergt/ioBroker.yandex-ud-bridge`
+
+The CI also runs the checker in an advisory job on pull requests and uploads its log. Before the first npm publication, npm/tag/release/catalog checks may legitimately fail. Do **not** interpret passing package/integration tests as a passing repository checker. Clear the checker findings prior to the Latest/Beta PR, and rerun against the published version.

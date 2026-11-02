@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "yandex-ud-bridge",
-    "version": "0.3.21",
+    "version": "0.3.22",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
       "ru": "Мост к Яндекс Умному дому",
@@ -38,6 +38,11 @@
       "Sergey Batayshchikov"
     ],
     "news": {
+      "0.3.22": {
+        "en": "Security hardening: opt-in trusted local Nginx proxy for per-client OAuth login throttling, bounded limiter storage and expanded tests.",
+        "ru": "Защита OAuth: доверенный локальный Nginx (опционально) для ограничения попыток входа по IP клиента, ограничение памяти и новые тесты.",
+        "de": "OAuth-Sicherheit: optionales Vertrauen in lokalen Nginx-Proxy für IP-basiertes Login-Limit, begrenzter Speicher und zusätzliche Tests."
+      },
       "0.3.21": {
         "en": "Prepare official ioBroker publishing checks: package and js-controller integration tests in CI, with a dedicated security review checklist.",
         "ru": "Подготовлены проверки для публикации в ioBroker: тесты пакета и интеграционный запуск через js-controller в CI, а также отдельный аудит безопасности.",
@@ -100,7 +105,8 @@
     "publicBaseUrl": "",
     "debugActions": false,
     "bind": "127.0.0.1",
-    "port": 8096
+    "port": 8096,
+    "trustProxy": false
   },
   "encryptedNative": [
     "oauthClientSecret",
@@ -151,5 +157,5 @@
       "native": {}
     }
   ],
-  "version": "0.3.21"
+  "version": "0.3.22"
 }

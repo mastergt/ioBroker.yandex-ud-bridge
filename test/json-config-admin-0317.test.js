@@ -7,7 +7,7 @@ const root = path.join(__dirname, '..');
 const io = require('../io-package.json');
 const pkg = require('../package.json');
 const schema = require('../admin/jsonConfig.json');
-const visibleInputs = new Set(['bind','port','publicBaseUrl','oauthClientId','oauthClientSecret','oauthLogin','oauthPassword','oauthUserId','callbackEnabled','callbackSkillId','callbackOauthToken','debugActions']);
+const visibleInputs = new Set(['bind','port','publicBaseUrl','oauthClientId','oauthClientSecret','oauthLogin','oauthPassword','oauthUserId','callbackEnabled','callbackSkillId','callbackOauthToken','debugActions','trustProxy']);
 
 test('Admin 3 JSON configuration has all supported instance settings and protects secrets', () => {
   assert.equal(io.common.adminUI.config, 'json');
