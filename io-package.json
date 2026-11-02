@@ -4,11 +4,13 @@
     "version": "0.3.16",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
-      "ru": "Мост к Яндекс Умному дому"
+      "ru": "Мост к Яндекс Умному дому",
+      "de": "Yandex Smart Home Bridge"
     },
     "desc": {
       "en": "Expose ioBroker states as devices for a Yandex Smart Home provider skill",
-      "ru": "Публикация устройств ioBroker через собственный навык умного дома Яндекса"
+      "ru": "Публикация устройств ioBroker через собственный навык умного дома Яндекса",
+      "de": "ioBroker-Geräte über eine eigene Yandex-Smart-Home-Integration bereitstellen"
     },
     "mode": "daemon",
     "platform": "Javascript/Node.js",
@@ -34,109 +36,13 @@
     "tier": 3,
     "license": "MIT",
     "authors": [
-      "Community prototype"
+      "Sergey Batayshchikov"
     ],
     "news": {
       "0.3.16": {
-        "ru": "Режим «Всегда доступен» для online и полный экспорт/импорт конфигурации вместе с OAuth-токенами.",
-        "en": "Always online option and complete configuration/OAuth backup and restore."
-      },
-      "0.3.15": {
-        "ru": "Доступность перенесена в общий список свойств устройства: единая компактная карточка, включение и привязка к State без изменения прежних настроек.",
-        "en": "Device availability is now configured as a compact property card alongside other functions, retaining old online-state settings."
-      },
-      "0.3.14": {
-        "ru": "Настройка преобразований значений без JSON: формы и таблицы в обе стороны, автоопределение чисел, логические значения и обратные соответствия.",
-        "en": "No-JSON transform editor: typed value mapping tables, readable thresholds and ranges, reversible mappings and automatic numeric conversion."
-      },
-      "0.3.13": {
-        "ru": "Опциональное расширенное логирование выполнения команд Яндекса: HTTP запрос, привязка, преобразование, запись в State и её результат (без OAuth-секретов).",
-        "en": "Optional Yandex action tracing: HTTP request, binding, conversion, ioBroker state write and result, without OAuth secrets."
-      },
-      "0.3.12": {
-        "ru": "Для ворот без обратной связи добавлен split=true; диагностические сообщения OPEN/CLOSE/STOP в журнале без выдачи команд при тестировании.",
-        "en": "Stateless gates use split=true; motor command tracing for OPEN/CLOSE/STOP."
-      },
-      "0.3.11": {
-        "ru": "Единые настройки привязки функций: один основной объект, необязательный отдельный объект состояния, общие преобразования чтения/записи. Сохранена совместимость с конфигурацией 0.3.10.",
-        "en": "Unified function binding UI: one primary object, optional feedback object, shared read/write transform controls; backward-compatible with 0.3.10."
-      },
-      "0.3.10": {
-        "en": "Fixed scrolling in native ioBroker object selector dialog",
-        "ru": "Исправлена прокрутка в штатном диалоге выбора объектов ioBroker",
-        "de": "Scrollen im nativen ioBroker-Objektauswahldialog korrigiert"
-      },
-      "0.3.9": {
-        "ru": "Объединены преобразования чтения/записи и профиль Tuya со строковыми командами OPEN/CLOSE/STOP для ворот и штор; расширенный поиск по имени, типу и комнате. Tuya percent_control: 0 = открыто, 100 = закрыто.",
-        "en": "Merge independent value transforms and Tuya curtain preset with OPEN/CLOSE/STOP gate controls, plus full device search. Tuya percent_control: 0 = open, 100 = closed."
-      },
-      "0.3.6": {
-        "ru": "Раздельные преобразования чтения и записи ioBroker; профиль штор Tuya (control .1, percent_control .2, percent_state .3, online). Без изменения старых устройств и OAuth.",
-        "en": "Independent read/write value transforms; safe Tuya Curtain preset with separated command, percentage and actual position states."
-      },
-      "0.3.5": {
-        "ru": "Исправлен второй переход OAuth на social.yandex.ru: разрешён адрес callback в Content-Security-Policy",
-        "en": "Allow Yandex broker callback on social.yandex.ru in OAuth form CSP redirect chain"
-      },
-      "0.3.4": {
-        "ru": "Исправлена CSP OAuth-формы: разрешён безопасный возврат браузера на social.yandex.net после авторизации",
-        "en": "Allow the OAuth browser redirect to social.yandex.net in form-action CSP to avoid blocked first login"
-      },
-      "0.3.3": {
-        "ru": "OAuth-запросы сохраняются на диск на 15 минут и переживают перезапуск; улучшена диагностика истечения формы",
-        "en": "Persist pending OAuth authorization requests for 15 minutes across restarts and improve expired-form diagnostics"
-      },
-      "0.3.2": {
-        "ru": "Отдельная генерация локального пароля авторизации без смены Client ID/Secret; исправление подсказки Endpoint URL для Яндекс Диалогов",
-        "en": "Safe local login password rotation without changing Yandex OAuth client; correct Yandex base Endpoint URL"
-      },
-      "0.3.1": {
-        "ru": "Встроенная безопасная диагностика OAuth и API провайдера с удалением тестовых токенов",
-        "en": "Built-in safe OAuth and provider API diagnostic with test token cleanup"
-      },
-      "0.3.0": {
-        "ru": "Мастер OAuth: генерация клиентских реквизитов и учётной записи, готовые HTTPS URL для Яндекс Диалогов",
-        "en": "One-click OAuth client/account bootstrap and copy-ready Yandex Dialogs HTTPS URLs"
-      },
-      "0.2.7": {
-        "ru": "Исправлен путь боковой вкладки Admin: /adapter/yandex-ud-bridge/tab_m.html вместо 404 /tab_m.html",
-        "en": "Fix Admin sidebar tab path to /adapter/yandex-ud-bridge/tab_m.html"
-      },
-      "0.2.6": {
-        "en": "Separate sidebar device manager and diagnostics; keep OAuth/HTTP/legacy import in instance settings",
-        "ru": "Устройства и проверка вынесены в боковое меню Admin; настройки сервера, OAuth и импорт оставлены в экземпляре"
-      },
-      "0.2.5": {
-        "en": "Choose rooms from ioBroker categories and suggest room/function from assigned state or channel",
-        "ru": "Выбор комнат из категорий ioBroker, автоподбор комнаты и назначения по состоянию"
-      },
-      "0.2.4": {
-        "en": "Use ioBroker Admin native selectID dialog for object picking",
-        "ru": "Штатный выбор объектов ioBroker Admin вместо собственного дерева"
-      },
-      "0.2.3": {
-        "en": "Fix adapter-core utility import that prevented startup",
-        "ru": "Исправлен импорт утилиты adapter-core, из-за которого адаптер не запускался"
-      },
-      "0.2.2": {
-        "en": "Fix Admin Materialize sendTo communication and state tree loading with retry/error handling",
-        "ru": "Исправлено подключение к Admin и загрузка дерева состояний с повтором и диагностикой"
-      },
-      "0.2.1": {
-        "en": "Object tree picker, unified read/write state, optional device online availability and offline callbacks",
-        "ru": "Дерево объектов, общее состояние чтения и записи, online/offline и уведомления"
-      },
-      "0.2.0": {
-        "en": "New device-oriented editor, built-in OAuth, local ioBroker states only, safe legacy config.js upload",
-        "ru": "Новый интерфейс устройств, собственный OAuth, привязка к ioBroker States и безопасная загрузка config.js"
-      },
-      "0.1.1": {
-        "en": "Fixed Admin JSON configuration schema (i18n requirement)",
-        "ru": "Исправлена схема настроек Admin (обязательное поле i18n)"
-      },
-      "0.1.0": {
-        "en": "First local prototype",
-        "ru": "Первая локальная версия"
+        "en": "Initial public release: Yandex Smart Home bridge with OAuth, typed mappings, availability controls, diagnostics and backup/restore.",
+        "ru": "Первый публичный релиз: мост к Яндекс Умному дому с OAuth, преобразованиями значений, доступностью, диагностикой и резервным копированием.",
+        "de": "Erste öffentliche Version: Yandex Smart Home Bridge mit OAuth, Wertzuordnungen, Verfügbarkeit, Diagnose und Sicherung."
       }
     },
     "type": "communication",
@@ -159,7 +65,17 @@
       "link": "/adapter/yandex-ud-bridge/tab_m.html",
       "singleton": true,
       "order": 155
-    }
+    },
+    "title": "Yandex Smart Home Bridge",
+    "keywords": [
+      "yandex",
+      "alice",
+      "smart-home",
+      "bridge",
+      "oauth"
+    ],
+    "extIcon": "https://raw.githubusercontent.com/mastergt/ioBroker.yandex-ud-bridge/main/admin/yandex-ud-bridge.svg",
+    "readme": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/blob/main/README.md"
   },
   "native": {
     "listenHost": "127.0.0.1",

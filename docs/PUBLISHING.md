@@ -1,34 +1,57 @@
-# Maintainer publishing checklist
+# Maintainer release and publishing checklist
 
-This package is a **GitHub preparation bundle**, not an npm release.
+Maintainer: **Sergey Batayshchikov** (GitHub: [@mastergt](https://github.com/mastergt)).  
+Project: [ioBroker.yandex-ud-bridge](https://github.com/mastergt/ioBroker.yandex-ud-bridge).
 
-## Before publishing publicly
+This is a maintainer checklist, **not** an indication that the adapter is already published to npm or included in the official ioBroker repositories.
 
-- [ ] Replace `OWNER` in README.md with your GitHub username or organization.
-- [ ] Review package author, `io-package.json` authors and LICENSE copyright. Do not claim another author's rights.
-- [ ] Run a security review of OAuth endpoints, CSRF/redirect handling, public provider API and backup import/export; run a code-secret scan.
-- [ ] Check that all test examples use placeholders; remove personal device IDs and private internal URLs.
-- [ ] Verify minimum supported ioBroker and Node.js versions using fresh installs.
-- [ ] Review Third Party dependencies and npm package contents.
-- [ ] Enable private vulnerability reporting in GitHub security settings.
+## Before the first npm publication
 
-## Publish GitHub source
+- [ ] Finish migrating the legacy Materialize settings interface to a supported Admin 3 / JSON Config-based configuration interface.
+- [ ] Validate the adapter with [ioBroker Adapter Checker](https://adapter-check.iobroker.in/) and fix blockers.
+- [ ] Add package/install/integration tests to GitHub Actions; verify clean startup, unload, and compact mode.
+- [ ] Audit OAuth redirects, authorization, public HTTP routes, rate limiting, data validation and secret handling. Review backup export/import security.
+- [ ] Verify installation on a fresh ioBroker and supported Node.js versions.
+- [ ] Verify documentation and asset links, GitHub topics, license, author fields and `npm pack --dry-run` contents.
+- [ ] Confirm the version has never been published to npm by another owner.
 
-1. Create a PUBLIC and empty `ioBroker.yandex-ud-bridge` repo on GitHub (no auto-created README/license/gitignore).
-2. Extract the prepared source archive, `cd` into its root folder.
-3. `git init -b main && git add . && git commit -m "Initial public adapter source v0.3.16"`
-4. `git remote add origin https://github.com/OWNER/ioBroker.yandex-ud-bridge.git`
-5. `git push -u origin main`
-6. Verify GitHub Actions. Do not create a release until CI is green and owner metadata and security checks are complete.
-7. Tag only the reviewed commit: `git tag v0.3.16 && git push origin v0.3.16`.
-8. Create a GitHub Release from that tag and mark it pre-release if appropriate.
+## Release preparation
 
-## Further distribution
+1. Update version in `package.json` and `io-package.json` together, and add a **public-facing** entry to `CHANGELOG.md` and `common.news`. Do not publish internal development history.
+2. Run:
 
-- GitHub development install: via ioBroker Admin custom-source dialog. Does not require npm publishing.
-- npm: first confirm name ownership/availability, create an npm account and release credentials. Follow the current ioBroker recommended release workflow and use npm Trusted Publishing where possible.
-- ioBroker Official Latest/Beta: use the current ioBroker.repositories guidelines, forum testing and adapter checker; requires modern config interface and additional metadata/tests. Do not claim inclusion until the PR is accepted.
+   ```bash
+   npm install
+   npm run check
+   npm test
+   npm pack --dry-run
+   ```
 
-### Public-release blockers still to decide
+3. Review [GitHub Actions](https://github.com/mastergt/ioBroker.yandex-ud-bridge/actions), the package contents, and the diff for secrets/private configuration data.
+4. Commit the validated release and create a Git tag matching the version, e.g. `v0.3.16`, **only once that exact code is ready for release**.
+5. Create a GitHub Release for the tag. Mark it as a pre-release when beta testing.
+6. Publish to npm using the authenticated maintainer account or npm Trusted Publishing once configured. Do not publish automatically from unreviewed commits.
+7. Per [ioBroker.repositories](https://github.com/ioBroker/ioBroker.repositories), invite `bluefox` as an npm package owner:
 
-The source currently uses the Materialize Admin UI, `Community prototype` author placeholders, and a custom OAuth service. A fresh security review and repository checker are required before requesting official catalog inclusion.
+   ```bash
+   npm owner add bluefox iobroker.yandex-ud-bridge
+   ```
+
+   Wait for the invitation to be accepted.
+
+## Apply for the ioBroker Latest/Beta repository
+
+- Confirm that Adapter Checker and integration CI are green and that the npm package is available.
+- Announce the adapter and request testing on the [ioBroker forum](https://forum.iobroker.net/).
+- Fork [`ioBroker/ioBroker.repositories`](https://github.com/ioBroker/ioBroker.repositories), install dependencies and run:
+
+  ```bash
+  npm run addToLatest -- --name yandex-ud-bridge --type communication
+  ```
+
+- Open a Pull Request for the generated `sources-dist.json` change. Alternatively use [iobroker.dev](https://www.iobroker.dev/).
+- The official Latest acceptance is controlled by the ioBroker maintainers. Later Stable inclusion needs separate testing, feedback and PR.
+
+## Current blockers after metadata cleanup
+
+The adapter still uses the **Materialize** settings UI, legacy `listenHost` / `listenPort` field names and unit-only CI. Its network-exposed OAuth/HTTP code also needs a dedicated security review. Preserve existing settings and stored credentials during any migration. This document is a checklist, not a publication approval.

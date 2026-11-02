@@ -1,7 +1,7 @@
 {
   "name": "iobroker.yandex-ud-bridge",
   "version": "0.3.16",
-  "description": "Yandex Smart Home bridge: availability overrides and full backup/restore",
+  "description": "Expose ioBroker devices to Yandex Smart Home through a self-hosted OAuth 2.0 provider bridge",
   "main": "main.js",
   "license": "MIT",
   "author": "Sergey Batayshchikov",
@@ -9,10 +9,13 @@
     "node": ">=20"
   },
   "keywords": [
-    "ioBroker",
+    "iobroker",
+    "iobroker-adapter",
     "yandex",
+    "alice",
+    "yandex-smart-home",
     "smart-home",
-    "adapter"
+    "oauth2"
   ],
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2"
@@ -27,6 +30,17 @@
     "admin/",
     "lib/",
     "README.md",
-    "LICENSE"
-  ]
+    "README.ru.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "examples/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mastergt/ioBroker.yandex-ud-bridge.git"
+  },
+  "homepage": "https://github.com/mastergt/ioBroker.yandex-ud-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/mastergt/ioBroker.yandex-ud-bridge/issues"
+  }
 }
