@@ -1,6 +1,6 @@
 {
   "name": "iobroker.yandex-ud-bridge",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "Expose ioBroker devices to Yandex Smart Home through a self-hosted OAuth 2.0 provider bridge",
   "main": "main.js",
   "license": "MIT",

@@ -39,10 +39,14 @@
         } catch (err) { finish(err); }
     }
 
+    // The ioBroker Admin owns its legacy Save/Close footer. Never scan THIS
+    // iframe: the device editor has its own Save button and a native <dialog>
+    // containing the word "Отмена". Treating their common <body> as a footer
+    // used to hide the whole editor whenever the state picker was opened.
     const FOOTER_SELECTORS = ['.adminButtons','.admin-buttons','.adapter-buttons','.m-footer','.ui-dialog-buttonpane','.saveButtons','.buttons','.footer','.page-footer','.admin-tab__footer'];
-    const FOOTER_BUTTON_SELECTORS = ['button','a','.btn','input[type=button]','input[type=submit]'];
+    const FOOTER_BUTTON_SELECTOR = 'button,a,.btn,input[type=button],input[type=submit]';
     const FOOTER_FLAG_ATTR = 'data-yud-hide-legacy-footer';
-    let footerObserver = null;
+    let footerObservers = [];
     function footerText(el) {
         if (!el) return '';
         const raw = typeof el.value === 'string' && !el.innerText ? el.value : (el.innerText || el.textContent || '');
@@ -54,21 +58,34 @@
     function isCloseLabel(text) {
         return /(close|cancel|отмена|выйти|закрыть)/.test(text || '');
     }
-    function footerBarLooksLikeSaveCloseBar(el) {
-        const text = footerText(el);
-        return isSaveLabel(text) && isCloseLabel(text);
-    }
-    function eachRelevantDocument(callback) {
-        const docs = [document];
-        try { if (window.parent && window.parent !== window && window.parent.document) docs.push(window.parent.document); } catch (_e) {}
-        try { if (window.top && window.top !== window && window.top.document) docs.push(window.top.document); } catch (_e) {}
+    function eachHostDocument(callback) {
+        // A tab shown on its own has no inherited Admin footer to suppress.
+        // Only parent/top documents can own the legacy controls.
+        const docs = [];
+        try { if (window.parent && window.parent !== window) docs.push(window.parent.document); } catch (_e) {}
+        try { if (window.top && window.top !== window) docs.push(window.top.document); } catch (_e) {}
         const seen = new Set();
-        docs.forEach(doc => {
-            if (doc && !seen.has(doc)) {
+        for (const doc of docs) {
+            if (doc && doc !== document && !seen.has(doc)) {
                 seen.add(doc);
                 callback(doc);
             }
-        });
+        }
+    }
+    function footerBarLooksLikeSaveCloseBar(el) {
+        if (!el || !el.querySelectorAll || !el.ownerDocument) return false;
+        const doc = el.ownerDocument;
+        // Never hide an entire Admin page, the frame containing this tab,
+        // or any ancestor of our own editor, even if Save and Close appear.
+        if (el === doc.body || el === doc.documentElement) return false;
+        try { if (window.frameElement && el.contains(window.frameElement)) return false; } catch (_e) {}
+        if (el.querySelector('.bridge-root')) return false;
+        const buttons = Array.from(el.querySelectorAll(FOOTER_BUTTON_SELECTOR));
+        // A real Save/Save & Close/Close footer is a compact group of actions.
+        // Broad wrappers containing unrelated controls are never targets.
+        if (buttons.length < 2 || buttons.length > 6) return false;
+        const labels = buttons.map(footerText);
+        return labels.some(isSaveLabel) && labels.some(isCloseLabel);
     }
     function setElementHidden(el, hidden) {
         if (!el) return;
@@ -90,11 +107,11 @@
         FOOTER_SELECTORS.forEach(selector => {
             doc.querySelectorAll(selector).forEach(el => found.add(el));
         });
-        doc.querySelectorAll(FOOTER_BUTTON_SELECTORS.join(',')).forEach(control => {
+        doc.querySelectorAll(FOOTER_BUTTON_SELECTOR).forEach(control => {
             const text = footerText(control);
             if (!isSaveLabel(text) && !isCloseLabel(text)) return;
-            let parent = control;
-            for (let depth = 0; depth < 6 && parent; depth += 1) {
+            let parent = control.parentElement;
+            for (let depth = 0; depth < 4 && parent; depth += 1) {
                 if (footerBarLooksLikeSaveCloseBar(parent)) found.add(parent);
                 parent = parent.parentElement;
             }
@@ -102,29 +119,33 @@
         return found;
     }
     function setLegacyFooterVisibility(hidden) {
-        eachRelevantDocument(doc => {
+        eachHostDocument(doc => {
+            // Restoration must not depend on innerText: hidden elements have
+            // empty innerText in Chrome, so the old code could not restore them.
+            if (!hidden) {
+                doc.querySelectorAll(`[${FOOTER_FLAG_ATTR}]`).forEach(el => setElementHidden(el, false));
+                return;
+            }
             candidateFooterContainers(doc).forEach(el => {
-                if (!footerBarLooksLikeSaveCloseBar(el)) return;
-                setElementHidden(el, hidden);
+                if (footerBarLooksLikeSaveCloseBar(el)) setElementHidden(el, true);
             });
         });
     }
     function startLegacyFooterHider() {
         setLegacyFooterVisibility(true);
-        footerObserver = [];
-        eachRelevantDocument(doc => {
+        eachHostDocument(doc => {
             try {
                 const root = doc.body || doc.documentElement;
                 if (!root) return;
                 const observer = new MutationObserver(() => setLegacyFooterVisibility(true));
-                observer.observe(root, { childList: true, subtree: true, characterData: true });
-                footerObserver.push(observer);
+                observer.observe(root, { childList: true, subtree: true });
+                footerObservers.push(observer);
             } catch (_e) {}
         });
     }
     function stopLegacyFooterHider() {
-        if (Array.isArray(footerObserver)) footerObserver.forEach(observer => observer.disconnect());
-        footerObserver = null;
+        footerObservers.forEach(observer => observer.disconnect());
+        footerObservers = [];
         setLegacyFooterVisibility(false);
     }
     window.instance = instanceNumber();
