@@ -468,6 +468,7 @@
             </div>`;
         }
         if (b.migrationHint) h += `<div class="hint"><b>Из старого config.js:</b> ${esc(b.migrationHint)}<br>Нужно выбрать состояния ioBroker. MQTT-топики не выполняются.</div>`;
+        if (property && b.type === 'float' && b.instance === 'pressure') h += pressurePresetEditor(b,j);
         if(!stream) {
             h += `<div class="divider-line"></div><div class="unified-transforms"><b>Значения и команды</b>
                 <p class="tiny-help">Настрой запись Яндекс → ioBroker таблицей значений (например, Включено → 100, Выключено → 0). Кнопка ⇄ создаёт обратную таблицу, а для датчиков или положения во время движения чтение можно настроить отдельно по порогу.</p>
@@ -476,6 +477,54 @@
         h += `<div class="button-row"><label class="expert-toggle"><input type="checkbox" data-bind="${prefix}reportable" ${b.reportable?'checked':''}> Передавать события об изменениях (callback)</label></div>`;
         if(ui.expert) h += `<div class="divider-line"></div><div class="fields">${textArea('Параметры API Яндекса (JSON)',prefix+'parameters',b.parameters)}${textArea('Соответствия значений (JSON)',prefix+'mapping',b.mapping)}</div><div class="fields three">${textField('Тип API',prefix+'type',b.type)}${textField('instance',prefix+'instance',b.instance)}${selectField('Назначение',prefix+'kind',b.kind,[['capability','Управление'],['property','Свойство']])}</div>`;
         return h + '</div>';
+    }
+    function pressurePresetEditor(b,j) {
+        const presetApi = window.YudPressureUnits;
+        if (!presetApi) return '<div class="hint">Модуль преобразования давления не загружен. Обновите страницу.</div>';
+        const existing = presetApi.recognize(b.parameters, b.readTransform);
+        let parsed = {};
+        try { parsed = JSON.parse(b.parameters || '{}') || {}; } catch (_e) {}
+        const selectedOutput = existing?.output || presetApi.outputKeys.find(id => presetApi.YANDEX[id] === parsed.unit) || 'mmhg';
+        const selectedInput = existing?.input || '';
+        const currentUnit = parsed.unit || 'не задана';
+        return `<div class="divider-line"></div><div class="pressure-preset" data-pressure-index="${j}">
+            <b>Пересчёт атмосферного давления</b>
+            <p class="tiny-help">Выберите единицы ioBroker и Яндекса. Коэффициент будет рассчитан автоматически при нажатии «Применить».</p>
+            <div class="fields two">
+                <label class="field"><span>Источник ioBroker</span><select data-pressure-source="${j}">
+                    <option value="">Выберите единицу…</option>
+                    ${presetApi.inputKeys.map(id=>`<option value="${id}" ${id===selectedInput?'selected':''}>${esc(presetApi.UNITS[id].label)}</option>`).join('')}
+                </select></label>
+                <label class="field"><span>Передать в Яндекс</span><select data-pressure-target="${j}">
+                    ${presetApi.outputKeys.map(id=>`<option value="${id}" ${id===selectedOutput?'selected':''}>${esc(presetApi.UNITS[id].label)}</option>`).join('')}
+                </select></label>
+            </div>
+            <div class="button-row"><button type="button" class="btn secondary small" data-action="apply-pressure-preset" data-index="${j}">Применить пересчёт</button></div>
+            <p class="tiny-help">Сейчас: ${esc(currentUnit)}${existing ? ` · ${esc(presetApi.UNITS[existing.input].label)} → ${esc(presetApi.UNITS[existing.output].label)}` : ' · исходный пересчёт сохранён без изменений'}.
+                Применение заменит только пересчёт чтения и единицу Яндекса; другие параметры останутся на месте.</p>
+        </div>`;
+    }
+    function applyPressurePreset(j) {
+        const b = ui.data.bindings[j];
+        if (!b || b.kind !== 'property' || b.type !== 'float' || b.instance !== 'pressure') return;
+        const api = window.YudPressureUnits;
+        const source = document.querySelector(`[data-pressure-source="${j}"]`)?.value;
+        const target = document.querySelector(`[data-pressure-target="${j}"]`)?.value;
+        if (!api || !source || !target) { notify('Выберите исходную единицу давления и единицу Яндекса.', 'error'); return; }
+        let parameters;
+        try { parameters = JSON.parse(b.parameters || '{}'); }
+        catch { notify('Сначала исправьте JSON параметров давления.', 'error'); return; }
+        if (!parameters || typeof parameters !== 'object' || Array.isArray(parameters)) {
+            notify('Параметры давления должны быть JSON-объектом.', 'error'); return;
+        }
+        let preset;
+        try { preset = api.preset(source, target); }
+        catch (err) { notify(err.message, 'error'); return; }
+        b.parameters = JSON.stringify({...parameters, instance:'pressure', unit:preset.unit});
+        b.readTransform = JSON.stringify(preset.readTransform);
+        touch();
+        render();
+        notify(`Пересчёт давления настроен: ${api.UNITS[source].label} → ${api.UNITS[target].label}. Нажмите «Сохранить изменения».`, 'ok');
     }
     // Human-friendly transform forms. Serialized native readTransform/writeTransform
     // remain fully backward-compatible with earlier versions of the adapter.
@@ -911,6 +960,7 @@
         else if (action==='use-template') newDevice(Number(index));
         else if (action==='open') {ui.selected=Number(index);ui.editing=null;ui.tuyaCurtainState='';render();}
         else if (action==='back') {ui.selected=null;ui.editing=null;ui.tuyaCurtainState='';render();}
+        else if (action==='apply-pressure-preset') applyPressurePreset(Number(index));
         else if (action==='toggle-function') {ui.editing=ui.editing===Number(index)?null:Number(index);render();}
         else if (action==='toggle-availability') {ui.editing=ui.editing==='availability'?null:'availability';render();}
         else if (action==='remove-availability') {

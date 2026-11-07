@@ -55,6 +55,8 @@ Then create/start an instance of `yandex-ud-bridge` and open its settings. GitHu
 
 Developers can clone the repository and run `npm install`, `npm run check`, `npm test`. The npm package and the official ioBroker catalog have their own publication/review processes; a GitHub repository alone does not make `iobroker install yandex-ud-bridge` available from the catalog.
 
+> **Admin interface (v0.3.18+):** Instance settings use JSON Config with standard `bind`/`port`; the device editor is a modern standalone HTML sidebar without Materialize/FancyTree. Existing `listenHost`/`listenPort` are migrated on first startup, while device bindings and OAuth tokens are preserved. See [upgrade notes](docs/ADMIN_MIGRATION.md).
+
 ## Set up the adapter
 
 1. Open the **yandex-ud-bridge instance settings** in Admin. Leave the HTTP listener at **`127.0.0.1`**, port **`8096`**, if Nginx runs on the same host. When Nginx runs elsewhere, use a private, firewalled connection instead of opening the adapter port publicly.
@@ -153,20 +155,6 @@ For `devices.capabilities.video_stream`, configure a **public HTTPS HLS playlist
 | Camera does not play | HLS (not RTSP), HTTPS playlist/segments, H.264/AAC, response headers and public access |
 | Device incorrectly offline | Availability binding, inversion or **Always online** |
 
-### Migrating devices from another skill (for example, yandex2mqtt)
-
-If devices were **previously added to Home with Alice through a different skill** (such as `yandex2mqtt`), simply switching to Yandex UD Bridge may not work, particularly if you keep the same device IDs.
-
-**Observed in practice:** Yandex appears to retain an association between a device ID and the provider skill that originally exposed it. When switching skills, reusing old IDs may interfere with device discovery or control. This is a migration observation, **not a confirmed universal Yandex rule**.
-
-If devices fail to appear or respond after the switch:
-
-1. Disable the old integration and, if necessary, unlink its skill and remove the corresponding devices from Home with Alice.
-2. Assign **new, unique device IDs** in Yandex UD Bridge (display names can stay the same).
-3. Link the new skill and rediscover/refresh devices in Yandex.
-
-**Important:** removing and re-adding devices may require reconfiguring rooms, scenes and automations. If the migration already works, there is no need to change device IDs.
-
 Never paste authorization tokens, backup JSON, private credentials or complete OAuth URLs with secrets into public Issues. Use [GitHub Issues](https://github.com/mastergt/ioBroker.yandex-ud-bridge/issues) for sanitized problems and [SECURITY.md](SECURITY.md) for sensitive reports.
 
 ## Development, contributing and license
@@ -191,6 +179,11 @@ disabled by default. See the [Nginx configuration example](examples/nginx/yandex
 for an additional rate limiter on OAuth endpoints.
 
 ## Changelog
+
+### 0.3.25
+
+- Pressure sensor editor now includes input/output unit presets; existing manual scale transforms are preserved unless Apply is clicked.
+- Select the ioBroker source (e.g. hPa) and Yandex target (e.g. mmHg); the adapter generates the required scale and pressure unit.
 
 ### 0.3.24
 

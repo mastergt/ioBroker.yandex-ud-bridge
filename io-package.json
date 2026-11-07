@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "yandex-ud-bridge",
-    "version": "0.3.24",
+    "version": "0.3.25",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
       "ru": "Мост к Яндекс Умному дому",
@@ -35,6 +35,11 @@
       "Sergey Batayshchikov <mastergt@mail.ru>"
     ],
     "news": {
+      "0.3.25": {
+        "en": "Added configurable pressure-unit conversion presets for hPa, Pa, kPa, mmHg, bar, and atm to Yandex-supported units without changing existing bindings.",
+        "ru": "Добавлены готовые преобразования давления из hPa, Pa, kPa, мм рт. ст., бар и атм в допустимые единицы Яндекса без изменения существующих привязок.",
+        "de": "Einheitenumrechnung für Drucksensoren: hPa, Pa, kPa, mmHg, bar und atm zu Yandex-Einheiten, ohne bestehende Zuordnungen zu ändern."
+      },
       "0.3.24": {
         "en": "Fixed the ioBroker object tree picker disappearing when the legacy Admin footer suppression ran. Keep dialogs and editor content visible.",
         "ru": "Исправлено исчезновение диалога выбора объектов ioBroker из-за скрытия нижних кнопок Admin. Редактор и модальные окна остаются видимыми.",

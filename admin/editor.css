@@ -73,3 +73,9 @@
 
 /* v0.3.19: hide redundant legacy Admin save/close footer in device-manager tab. */
 body[data-bridge-mode=tab] .yud-hidden-admin-footer{display:none!important}
+
+/* Pressure preset: human-friendly shortcut, existing scale data remains canonical. */
+.bridge-root .pressure-preset{margin:14px 0;padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.bridge-root .pressure-preset>b{font-size:15px}
+.bridge-root .pressure-preset .fields.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0}
+@media(max-width:650px){.bridge-root .pressure-preset .fields.two{grid-template-columns:1fr}}
