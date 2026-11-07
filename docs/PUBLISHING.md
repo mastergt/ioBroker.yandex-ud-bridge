@@ -5,6 +5,8 @@ Project: [ioBroker.yandex-ud-bridge](https://github.com/mastergt/ioBroker.yandex
 
 This is a maintainer checklist, **not** an indication that the adapter is already published to npm or included in the official ioBroker repositories.
 
+**First npm release procedure:** [FIRST_NPM_RELEASE.md](FIRST_NPM_RELEASE.md). The initial publication is manual; enable Trusted Publishing afterwards for future versions.
+
 ## Before the first npm publication
 
 - [x] Migrate instance settings to Admin 3 JSON Config (v0.3.17) and modern standalone HTML device tab without Materialize (v0.3.18). **Discuss the optional Admin sidebar with reviewers.**
