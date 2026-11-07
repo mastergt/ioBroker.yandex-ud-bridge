@@ -54,6 +54,7 @@ test('11 locales have meaningful translations for every JSON Config label and he
 
 test('metadata and complete release notes use all 11 ioBroker languages', () => {
     const common = metadata.common;
+    assert.ok(Object.keys(common.news).length <= 7, 'ioBroker caps public common.news to seven releases');
     assert.equal(pkg.version, common.version);
     assert.equal(pkg.version, '0.3.26');
     for (const [name, translationsByLanguage] of [
