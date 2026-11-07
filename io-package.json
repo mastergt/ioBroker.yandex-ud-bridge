@@ -75,7 +75,10 @@
     },
     "dataFolder": "yandex-ud-bridge.%INSTANCE%",
     "icon": "yandex-ud-bridge.svg",
-    "materializeTab": true,
+    "adminUI": {
+      "config": "json",
+      "tab": "materialize"
+    },
     "adminTab": {
       "name": {
         "en": "Yandex Smart Home",
