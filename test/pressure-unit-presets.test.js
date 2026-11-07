@@ -130,3 +130,18 @@ test('preset helper loads before editor in both Admin entrypoints',()=>{
         assert.match(content,/src="pressure-units\.js"/);
     }
 });
+
+
+test('existing invalid ppm metadata becomes supported pressure unit only on explicit Apply',()=>{
+    const row={parameters:JSON.stringify({instance:'pressure',unit:'unit.ppm',note:'unchanged'})};
+    const ui=instance(row);
+    ui.action('open',0);ui.action('toggle-function',0);
+    assert.equal(JSON.parse(ui.save().bindings[0].parameters).unit,'unit.ppm');
+    ui.element('[data-pressure-source="0"]').value='hpa';
+    ui.element('[data-pressure-target="0"]').value='mmhg';
+    ui.action('apply-pressure-preset',0);
+    const converted=ui.save().bindings[0];
+    assert.equal(JSON.parse(converted.parameters).unit,'unit.pressure.mmhg');
+    assert.equal(JSON.parse(converted.parameters).note,'unchanged');
+    assert.ok(Math.abs(toYandex(1007.94,converted)-756.016)<0.004);
+});
