@@ -3,19 +3,11 @@
   "items": {
     "server": {
       "type": "panel",
-      "label": {
-        "en": "Server & HTTPS",
-        "ru": "Сервер и HTTPS",
-        "de": "Server & HTTPS"
-      },
+      "label": "server.label",
       "items": {
         "_serverIntro": {
           "type": "staticText",
-          "label": {
-            "en": "The Yandex provider API must be exposed through a public HTTPS reverse proxy. Keep the HTTP listener on 127.0.0.1 when using Nginx on this host.",
-            "ru": "API провайдера должен быть доступен через публичный HTTPS reverse proxy. При расположении Nginx на этом сервере оставьте HTTP-сервер на 127.0.0.1.",
-            "de": "The Yandex provider API must be exposed through a public HTTPS reverse proxy. Keep the HTTP listener on 127.0.0.1 when using Nginx on this host."
-          },
+          "label": "server._serverIntro.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -24,11 +16,7 @@
         },
         "publicBaseUrl": {
           "type": "text",
-          "label": {
-            "en": "Public HTTPS base URL",
-            "ru": "Публичный HTTPS-адрес",
-            "de": "Public HTTPS base URL"
-          },
+          "label": "server.publicBaseUrl.label",
           "sm": 12,
           "validator": "!data.publicBaseUrl || /^https:\\/\\/[^\\s/?#]+\\/?$/.test(data.publicBaseUrl)",
           "xs": 12,
@@ -38,11 +26,7 @@
         },
         "_urlHelp": {
           "type": "staticText",
-          "label": {
-            "en": "Example: https://smart.example.com. Do not add /provider/ to the base URL. Open only TCP 443 to the Internet; do not expose the ioBroker Admin UI or local adapter port.",
-            "ru": "Например: https://smart.example.com. Не добавляйте /provider/ к базовому адресу. Из Интернета должен быть открыт только TCP 443; не публикуйте порт ioBroker Admin или HTTP-порт адаптера.",
-            "de": "Example: https://smart.example.com. Do not add /provider/ to the base URL. Open only TCP 443 to the Internet; do not expose the ioBroker Admin UI or local adapter port."
-          },
+          "label": "server._urlHelp.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -51,11 +35,7 @@
         },
         "_providerUrl": {
           "type": "pattern",
-          "label": {
-            "en": "Skill endpoint (copy into Yandex Dialogs)",
-            "ru": "Endpoint навыка (для Яндекс Диалогов)",
-            "de": "Skill endpoint (copy into Yandex Dialogs)"
-          },
+          "label": "server._providerUrl.label",
           "pattern": "${data.publicBaseUrl}/provider/",
           "copyToClipboard": true,
           "sm": 12,
@@ -66,11 +46,7 @@
         },
         "_oauthUrl": {
           "type": "pattern",
-          "label": {
-            "en": "OAuth authorization URL",
-            "ru": "Адрес авторизации OAuth",
-            "de": "OAuth authorization URL"
-          },
+          "label": "server._oauthUrl.label",
           "pattern": "${data.publicBaseUrl}/oauth/authorize",
           "copyToClipboard": true,
           "sm": 12,
@@ -81,11 +57,7 @@
         },
         "_tokenUrl": {
           "type": "pattern",
-          "label": {
-            "en": "OAuth token URL",
-            "ru": "Адрес OAuth-токена",
-            "de": "OAuth token URL"
-          },
+          "label": "server._tokenUrl.label",
           "pattern": "${data.publicBaseUrl}/oauth/token",
           "copyToClipboard": true,
           "sm": 12,
@@ -96,44 +68,28 @@
         },
         "bind": {
           "type": "text",
-          "label": {
-            "en": "Bind address (local HTTP)",
-            "ru": "Адрес прослушивания (локальный HTTP)",
-            "de": "Bind-Adresse (lokales HTTP)"
-          },
+          "label": "server.bind.label",
           "sm": 6,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "port": {
           "type": "number",
-          "label": {
-            "en": "HTTP port",
-            "ru": "HTTP-порт",
-            "de": "HTTP-Port"
-          },
+          "label": "server.port.label",
           "sm": 6,
           "min": 1,
           "max": 65535,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "trustProxy": {
           "type": "checkbox",
-          "label": {
-            "en": "Trust local Nginx X-Real-IP for OAuth login limits",
-            "ru": "Доверять X-Real-IP от локального Nginx для ограничения попыток входа",
-            "de": "X-Real-IP des lokalen Nginx für OAuth-Anmeldelimits vertrauen"
-          },
-          "help": {
-            "en": "Enable only when Nginx connects locally and overwrites X-Real-IP with $remote_addr. Headers from non-local connections are always ignored.",
-            "ru": "Включайте, только если Nginx подключается локально и перезаписывает X-Real-IP значением $remote_addr. Заголовки от удалённых клиентов игнорируются.",
-            "de": "Nur aktivieren, wenn Nginx lokal verbindet und X-Real-IP mit $remote_addr überschreibt."
-          },
+          "label": "server.trustProxy.label",
+          "help": "server.trustProxy.help",
           "sm": 12,
           "default": false,
           "xs": 12,
@@ -145,19 +101,11 @@
     },
     "oauth": {
       "type": "panel",
-      "label": {
-        "en": "OAuth 2.0",
-        "ru": "Авторизация OAuth",
-        "de": "OAuth 2.0"
-      },
+      "label": "oauth.label",
       "items": {
         "_oauthHelp": {
           "type": "staticText",
-          "label": {
-            "en": "Use two different credential sets: Client ID/Secret for the Yandex skill and login/password for the account-linking page. Existing credentials are never rotated automatically. Save any other pending changes before using a generate button.",
-            "ru": "Используются две пары реквизитов: Client ID/Secret для навыка Яндекса и логин/пароль для страницы привязки аккаунта. Уже созданные реквизиты не меняются автоматически. Перед генерацией сохраните остальные изменения формы.",
-            "de": "Use two different credential sets: Client ID/Secret for the Yandex skill and login/password for the account-linking page. Existing credentials are never rotated automatically. Save any other pending changes before using a generate button."
-          },
+          "label": "oauth._oauthHelp.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -166,78 +114,54 @@
         },
         "oauthClientId": {
           "type": "text",
-          "label": {
-            "en": "OAuth Client ID (Yandex skill)",
-            "ru": "OAuth Client ID (навык Яндекса)",
-            "de": "OAuth Client ID (Yandex skill)"
-          },
+          "label": "oauth.oauthClientId.label",
           "sm": 6,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "oauthClientSecret": {
           "type": "password",
-          "label": {
-            "en": "OAuth Client Secret",
-            "ru": "OAuth Client Secret",
-            "de": "OAuth Client Secret"
-          },
+          "label": "oauth.oauthClientSecret.label",
           "sm": 6,
           "visible": true,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "oauthLogin": {
           "type": "text",
-          "label": {
-            "en": "Account linking login",
-            "ru": "Логин для привязки аккаунта",
-            "de": "Account linking login"
-          },
+          "label": "oauth.oauthLogin.label",
           "sm": 6,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "oauthPassword": {
           "type": "password",
-          "label": {
-            "en": "Account linking password",
-            "ru": "Пароль для привязки аккаунта",
-            "de": "Account linking password"
-          },
+          "label": "oauth.oauthPassword.label",
           "sm": 6,
           "visible": true,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "oauthUserId": {
           "type": "text",
-          "label": {
-            "en": "Internal Yandex user ID",
-            "ru": "Внутренний ID пользователя",
-            "de": "Internal Yandex user ID"
-          },
+          "label": "oauth.oauthUserId.label",
           "sm": 6,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "_createOAuth": {
           "type": "sendTo",
-          "label": {
-            "en": "Generate initial credentials (empty fields only)",
-            "ru": "Сгенерировать реквизиты (только если не настроены)",
-            "de": "Generate initial credentials (empty fields only)"
-          },
+          "label": "oauth._createOAuth.label",
           "command": "jsonOAuthBootstrap",
           "useNative": true,
           "showProcess": true,
@@ -249,11 +173,7 @@
         },
         "_rotateLogin": {
           "type": "sendTo",
-          "label": {
-            "en": "Generate a new account-linking password",
-            "ru": "Сгенерировать новый пароль для входа",
-            "de": "Generate a new account-linking password"
-          },
+          "label": "oauth._rotateLogin.label",
           "command": "jsonOAuthRotatePassword",
           "useNative": true,
           "showProcess": true,
@@ -265,11 +185,7 @@
         },
         "_oauthNote": {
           "type": "staticText",
-          "label": {
-            "en": "Save the settings after generation. Changing Client ID/Secret requires updating the Yandex skill. Changing the login password does not automatically revoke previously issued tokens.",
-            "ru": "После генерации сохраните настройки. При смене Client ID/Secret нужно обновить навык Яндекса. Смена пароля входа сама по себе не отзывает ранее выданные токены.",
-            "de": "Save the settings after generation. Changing Client ID/Secret requires updating the Yandex skill. Changing the login password does not automatically revoke previously issued tokens."
-          },
+          "label": "oauth._oauthNote.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -280,19 +196,11 @@
     },
     "callbacks": {
       "type": "panel",
-      "label": {
-        "en": "Callbacks & diagnostics",
-        "ru": "События и диагностика",
-        "de": "Callbacks & diagnostics"
-      },
+      "label": "callbacks.label",
       "items": {
         "callbackEnabled": {
           "type": "checkbox",
-          "label": {
-            "en": "Enable Yandex state callbacks",
-            "ru": "Передавать изменения состояний в Яндекс",
-            "de": "Enable Yandex state callbacks"
-          },
+          "label": "callbacks.callbackEnabled.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -301,40 +209,28 @@
         },
         "callbackSkillId": {
           "type": "text",
-          "label": {
-            "en": "Yandex skill ID",
-            "ru": "ID навыка Яндекса",
-            "de": "Yandex skill ID"
-          },
+          "label": "callbacks.callbackSkillId.label",
           "sm": 6,
           "hidden": "!data.callbackEnabled",
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "callbackOauthToken": {
           "type": "password",
-          "label": {
-            "en": "Yandex callback OAuth token",
-            "ru": "OAuth-токен callback API",
-            "de": "Yandex callback OAuth token"
-          },
+          "label": "callbacks.callbackOauthToken.label",
           "sm": 6,
           "hidden": "!data.callbackEnabled",
           "visible": true,
-          "xs": 12,
+          "xs": 6,
           "md": 6,
           "lg": 6,
           "xl": 6
         },
         "debugActions": {
           "type": "checkbox",
-          "label": {
-            "en": "Enable extended action traces in logs",
-            "ru": "Подробное логирование команд Яндекса",
-            "de": "Enable extended action traces in logs"
-          },
+          "label": "callbacks.debugActions.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -343,11 +239,7 @@
         },
         "_callbackInfo": {
           "type": "staticText",
-          "label": {
-            "en": "Optional callbacks send notifications for bound properties marked reportable. Never share OAuth tokens or unredacted action logs publicly.",
-            "ru": "Callback отправляет события для свойств, помеченных для передачи изменений. Никогда не публикуйте OAuth-токены и необработанные диагностические логи.",
-            "de": "Optional callbacks send notifications for bound properties marked reportable. Never share OAuth tokens or unredacted action logs publicly."
-          },
+          "label": "callbacks._callbackInfo.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -358,19 +250,11 @@
     },
     "devices": {
       "type": "panel",
-      "label": {
-        "en": "Devices & backup",
-        "ru": "Устройства и бэкап",
-        "de": "Devices & backup"
-      },
+      "label": "devices.label",
       "items": {
         "_deviceInfo": {
           "type": "staticText",
-          "label": {
-            "en": "Manage device types, bindings, bidirectional mappings, availability, preview and backup/restore in the separate “Yandex Smart Home” Admin tab. Settings saved here do not delete existing devices or mappings.",
-            "ru": "Устройства, привязки, двусторонние преобразования, доступность, предпросмотр и полный бэкап настраиваются в отдельной вкладке «Яндекс Умный дом». Сохранение этой формы не должно удалять ранее созданные устройства и привязки.",
-            "de": "Manage device types, bindings, bidirectional mappings, availability, preview and backup/restore in the separate “Yandex Smart Home” Admin tab. Settings saved here do not delete existing devices or mappings."
-          },
+          "label": "devices._deviceInfo.label",
           "sm": 12,
           "xs": 12,
           "md": 12,
@@ -379,11 +263,7 @@
         },
         "_github": {
           "type": "staticLink",
-          "label": {
-            "en": "Adapter documentation",
-            "ru": "Документация адаптера",
-            "de": "Adapter documentation"
-          },
+          "label": "devices._github.label",
           "href": "https://github.com/mastergt/ioBroker.yandex-ud-bridge",
           "button": true,
           "sm": 12,

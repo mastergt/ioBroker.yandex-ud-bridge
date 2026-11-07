@@ -180,6 +180,10 @@ for an additional rate limiter on OAuth endpoints.
 
 ## Changelog
 
+### 0.3.26
+
+- Add 11-language localization for adapter metadata, release notes and JSON Config settings, using Weblate-compatible translation files. The standalone device editor is still primarily in Russian.
+
 ### 0.3.25
 
 - Pressure sensor editor now includes input/output unit presets; existing manual scale transforms are preserved unless Apply is clicked.
