@@ -35,10 +35,6 @@
     "compact": true,
     "enabled": true,
     "messagebox": true,
-    "adminUI": {
-      "config": "json",
-      "tab": "html"
-    },
     "supportCustoms": false,
     "dependencies": [
       {
