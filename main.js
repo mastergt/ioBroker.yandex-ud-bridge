@@ -79,7 +79,7 @@ class YandexUdBridge extends Adapter {
             }
             this.pending.set(item.id,existing);
         }
-        if (this.pending.size && !this.callbackTimer) this.callbackTimer = setTimeout(() => { this.callbackTimer = null; this.flushCallback().catch(e => this.log.warn(e.message)); }, 750);
+        if (this.pending.size && !this.callbackTimer) this.callbackTimer = this.setTimeout(() => { this.callbackTimer = null; this.flushCallback().catch(e => this.log.warn(e.message)); }, 750);
     }
     async flushCallback() {
         const devices = [...this.pending.values()].map(item=>{
@@ -229,7 +229,7 @@ class YandexUdBridge extends Adapter {
     }
     onUnload(callback) {
         (async () => {
-            if (this.callbackTimer) clearTimeout(this.callbackTimer);
+            if (this.callbackTimer) this.clearTimeout(this.callbackTimer);
             if (this.server?.listening) await new Promise(resolve=>this.server.close(resolve));
             await this.setStateAsync('info.connection',{val:false,ack:true}); callback();
         })().catch(e=>{this.log.error(e.message);callback();});

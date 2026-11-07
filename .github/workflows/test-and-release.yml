@@ -1,0 +1,49 @@
+name: Test and Release
+
+# Based on the ioBroker.example JavaScript workflow.
+# NPM deployment is deliberately disabled until trusted publishing is set up.
+on:
+  push:
+    branches: [main]
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-**"
+  pull_request: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ioBroker/testing-action-check@v1
+        with:
+          node-version: '24.x'
+          install-command: 'npm install --no-audit --no-fund'
+          package-cache: 'false'
+          # The adapter does not yet have an ESLint script.
+          lint: 'false'
+
+  adapter-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.x', '24.x']
+        os: [ubuntu-latest]
+    steps:
+      - uses: ioBroker/testing-action-adapter@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          os: ${{ matrix.os }}
+          install-command: 'npm install --no-audit --no-fund'
+          package-cache: 'false'
+
+# First release is manual. Do not add an active deploy job until the
+# maintainer configures npm Trusted Publishing for this exact workflow
+# and explicitly approves enabling automated releases.
