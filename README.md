@@ -192,6 +192,11 @@ for an additional rate limiter on OAuth endpoints.
 
 ## Changelog
 
+### 0.3.24
+
+- Fix state/object tree picker disappearing when selecting an ioBroker object. The legacy Admin footer hider no longer touches the device editor or native dialogs.
+- Add regression coverage for Save/Close toolbar suppression and proper restoration.
+
 ### 0.3.23
 
 - Update platform requirements to Node.js 22.19+, js-controller 6.0.11+ and Admin 7.6.20+.

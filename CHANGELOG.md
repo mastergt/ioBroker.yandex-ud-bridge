@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.24
+
+- Fix native ioBroker state picker disappearing after clicking Select: legacy footer detector could hide the entire adapter document when Save and Cancel became visible.
+- Restrict legacy footer suppression to parent Admin documents and compact action bars, never the editor or modal itself.
+- Restore hidden Admin footer reliably on tab close; add regression tests for the picker and standalone tab.
+- No changes to device IDs, settings or OAuth configuration.
+
 ## 0.3.23
 
 - Require Node.js 22.19+, js-controller 6.0.11+ and Admin 7.6.20+ for upcoming ioBroker catalog compliance.

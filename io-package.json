@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "yandex-ud-bridge",
-    "version": "0.3.23",
+    "version": "0.3.24",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
       "ru": "Мост к Яндекс Умному дому",
@@ -35,6 +35,11 @@
       "Sergey Batayshchikov <mastergt@mail.ru>"
     ],
     "news": {
+      "0.3.24": {
+        "en": "Fixed the ioBroker object tree picker disappearing when the legacy Admin footer suppression ran. Keep dialogs and editor content visible.",
+        "ru": "Исправлено исчезновение диалога выбора объектов ioBroker из-за скрытия нижних кнопок Admin. Редактор и модальные окна остаются видимыми.",
+        "de": "Behebt das Verschwinden des ioBroker-Objektauswahldialogs durch die Unterdrückung der alten Admin-Schaltflächen."
+      },
       "0.3.23": {
         "en": "Updated platform requirements: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, current adapter core and testing harness.",
         "ru": "Обновлены требования к платформе: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, современные adapter-core и тестовый стенд.",
