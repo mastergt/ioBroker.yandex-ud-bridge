@@ -73,7 +73,7 @@
     "icon": "yandex-ud-bridge.svg",
     "adminUI": {
       "config": "json",
-      "tab": "materialize"
+      "tab": "html"
     },
     "adminTab": {
       "name": {
