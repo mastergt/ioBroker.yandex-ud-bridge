@@ -1,16 +1,32 @@
 {
   "common": {
     "name": "yandex-ud-bridge",
-    "version": "0.3.25",
+    "version": "0.3.26",
     "titleLang": {
       "en": "Yandex Smart Home Bridge",
       "ru": "Мост к Яндекс Умному дому",
-      "de": "Yandex Smart Home Bridge"
+      "de": "Yandex Smart Home Bridge",
+      "es": "Puente para el hogar inteligente Yandex",
+      "fr": "Passerelle maison connectée Yandex",
+      "it": "Bridge per la casa intelligente Yandex",
+      "nl": "Yandex Smart Home-bridge",
+      "pt": "Ponte para casa inteligente Yandex",
+      "pl": "Most Yandex Smart Home",
+      "uk": "Міст до розумного дому Yandex",
+      "zh-cn": "Yandex 智能家居桥接器"
     },
     "desc": {
       "en": "Expose ioBroker states as devices for a Yandex Smart Home provider skill",
       "ru": "Публикация устройств ioBroker через собственный навык умного дома Яндекса",
-      "de": "ioBroker-Geräte über eine eigene Yandex-Smart-Home-Integration bereitstellen"
+      "de": "ioBroker-Geräte über eine eigene Yandex-Smart-Home-Integration bereitstellen",
+      "es": "Publica estados de ioBroker como dispositivos mediante tu propio skill de Yandex Smart Home",
+      "fr": "Expose les états ioBroker comme appareils via votre propre skill fournisseur Yandex Smart Home",
+      "it": "Espone gli stati ioBroker come dispositivi tramite una propria skill Yandex Smart Home",
+      "nl": "Maak ioBroker-statussen beschikbaar als apparaten via een eigen Yandex Smart Home-skill",
+      "pt": "Expõe estados do ioBroker como dispositivos através de uma skill própria Yandex Smart Home",
+      "pl": "Udostępnia stany ioBroker jako urządzenia przez własną umiejętność Yandex Smart Home",
+      "uk": "Публікує стани ioBroker як пристрої через власну навичку Yandex Smart Home",
+      "zh-cn": "通过自建 Yandex Smart Home 技能将 ioBroker 状态公开为智能设备"
     },
     "mode": "daemon",
     "platform": "Javascript/Node.js",
@@ -35,40 +51,109 @@
       "Sergey Batayshchikov <mastergt@mail.ru>"
     ],
     "news": {
+      "0.3.26": {
+        "en": "Added 11-language localization for ioBroker adapter metadata, release notes and the JSON Config settings screen.",
+        "ru": "Добавлены переводы на 11 языков для метаданных, истории версий и JSON-настроек адаптера ioBroker.",
+        "de": "Übersetzungen in 11 Sprachen für Adapter-Metadaten, Versionshinweise und JSON-Konfiguration hinzugefügt.",
+        "es": "Se añadieron traducciones para 11 idiomas a los metadatos y la configuración JSON del adaptador.",
+        "fr": "Ajout de traductions en 11 langues pour les métadonnées et la configuration JSON de l’adaptateur.",
+        "it": "Aggiunte traduzioni in 11 lingue per i metadati e la configurazione JSON dell’adattatore.",
+        "nl": "Vertalingen in 11 talen toegevoegd voor adaptermetadata en JSON-configuratie.",
+        "pt": "Adicionadas traduções em 11 idiomas para metadados e configuração JSON do adaptador.",
+        "pl": "Dodano tłumaczenia metadanych i konfiguracji JSON adaptera na 11 języków.",
+        "uk": "Додано переклади 11 мовами для метаданих та JSON-налаштувань адаптера.",
+        "zh-cn": "为适配器元数据和 JSON 配置新增 11 种语言的翻译。"
+      },
       "0.3.25": {
         "en": "Added configurable pressure-unit conversion presets for hPa, Pa, kPa, mmHg, bar, and atm to Yandex-supported units without changing existing bindings.",
         "ru": "Добавлены готовые преобразования давления из hPa, Pa, kPa, мм рт. ст., бар и атм в допустимые единицы Яндекса без изменения существующих привязок.",
-        "de": "Einheitenumrechnung für Drucksensoren: hPa, Pa, kPa, mmHg, bar und atm zu Yandex-Einheiten, ohne bestehende Zuordnungen zu ändern."
+        "de": "Einheitenumrechnung für Drucksensoren: hPa, Pa, kPa, mmHg, bar und atm zu Yandex-Einheiten, ohne bestehende Zuordnungen zu ändern.",
+        "es": "Se añadieron conversiones de presión entre hPa, Pa, kPa, mmHg, bar y atm a unidades admitidas por Yandex sin cambiar los vínculos existentes.",
+        "fr": "Ajout de conversions de pression hPa, Pa, kPa, mmHg, bar et atm vers les unités Yandex sans modifier les liaisons existantes.",
+        "it": "Aggiunti preset di conversione della pressione da hPa, Pa, kPa, mmHg, bar e atm a unità Yandex senza modificare le associazioni esistenti.",
+        "nl": "Drukomrekenpresets toegevoegd voor hPa, Pa, kPa, mmHg, bar en atm naar Yandex-eenheden zonder bestaande koppelingen te wijzigen.",
+        "pt": "Adicionados presets de conversão de pressão de hPa, Pa, kPa, mmHg, bar e atm para unidades Yandex sem alterar associações existentes.",
+        "pl": "Dodano gotowe przeliczanie ciśnienia hPa, Pa, kPa, mmHg, bar i atm na jednostki Yandex bez zmiany istniejących powiązań.",
+        "uk": "Додано готове перетворення тиску з hPa, Pa, kPa, мм рт. ст., бар і атм у підтримувані одиниці Yandex без зміни наявних прив’язок.",
+        "zh-cn": "新增压力单位转换预设，支持 hPa、Pa、kPa、mmHg、bar 和 atm 转换为 Yandex 支持的单位，不修改现有绑定。"
       },
       "0.3.24": {
         "en": "Fixed the ioBroker object tree picker disappearing when the legacy Admin footer suppression ran. Keep dialogs and editor content visible.",
         "ru": "Исправлено исчезновение диалога выбора объектов ioBroker из-за скрытия нижних кнопок Admin. Редактор и модальные окна остаются видимыми.",
-        "de": "Behebt das Verschwinden des ioBroker-Objektauswahldialogs durch die Unterdrückung der alten Admin-Schaltflächen."
+        "de": "Behebt das Verschwinden des ioBroker-Objektauswahldialogs durch die Unterdrückung der alten Admin-Schaltflächen.",
+        "es": "Se corrigió la desaparición del selector de objetos ioBroker al ocultar los botones antiguos de Admin. El editor y los diálogos permanecen visibles.",
+        "fr": "Correction de la disparition du sélecteur d’objets ioBroker lorsque les boutons Admin hérités étaient masqués. L’éditeur et les fenêtres restent visibles.",
+        "it": "Risolto il problema del selettore degli oggetti ioBroker che scompariva nascondendo i vecchi pulsanti Admin. Editor e finestre restano visibili.",
+        "nl": "Verholpen dat de ioBroker-objectkiezer verdween tijdens het verbergen van oude Admin-knoppen. Editor en dialoogvensters blijven zichtbaar.",
+        "pt": "Corrigido o desaparecimento do seletor de objetos ioBroker ao ocultar botões antigos do Admin. O editor e os diálogos permanecem visíveis.",
+        "pl": "Naprawiono znikanie okna wyboru obiektów ioBroker podczas ukrywania starych przycisków Admin. Edytor i okna pozostają widoczne.",
+        "uk": "Виправлено зникнення вікна вибору об’єктів ioBroker під час приховування старих кнопок Admin. Редактор і діалоги залишаються видимими.",
+        "zh-cn": "修复隐藏旧版 Admin 按钮时 ioBroker 对象选择器消失的问题，编辑器和对话框保持可见。"
       },
       "0.3.23": {
         "en": "Updated platform requirements: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, current adapter core and testing harness.",
         "ru": "Обновлены требования к платформе: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, современные adapter-core и тестовый стенд.",
-        "de": "Aktualisierte Plattformanforderungen: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, aktuelle Adapter-Core- und Testpakete."
+        "de": "Aktualisierte Plattformanforderungen: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+, aktuelle Adapter-Core- und Testpakete.",
+        "es": "Se actualizaron los requisitos de plataforma: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ y herramientas de prueba actuales.",
+        "fr": "Mise à jour des prérequis : Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ et outils de test actuels.",
+        "it": "Aggiornati i requisiti: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ e strumenti di test correnti.",
+        "nl": "Platformvereisten bijgewerkt: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ en recente testhulpmiddelen.",
+        "pt": "Atualizados os requisitos: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ e ferramentas de teste atuais.",
+        "pl": "Zaktualizowano wymagania: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ i narzędzia testowe.",
+        "uk": "Оновлено вимоги: Node.js 22.19+, js-controller 6.0.11+, Admin 7.6.20+ та сучасні засоби тестування.",
+        "zh-cn": "更新平台要求：Node.js 22.19+、js-controller 6.0.11+、Admin 7.6.20+ 以及最新测试工具。"
       },
       "0.3.22": {
         "en": "Security hardening: opt-in trusted local Nginx proxy for per-client OAuth login throttling, bounded limiter storage and expanded tests.",
         "ru": "Защита OAuth: доверенный локальный Nginx (опционально) для ограничения попыток входа по IP клиента, ограничение памяти и новые тесты.",
-        "de": "OAuth-Sicherheit: optionales Vertrauen in lokalen Nginx-Proxy für IP-basiertes Login-Limit, begrenzter Speicher und zusätzliche Tests."
+        "de": "OAuth-Sicherheit: optionales Vertrauen in lokalen Nginx-Proxy für IP-basiertes Login-Limit, begrenzter Speicher und zusätzliche Tests.",
+        "es": "Se reforzó la seguridad OAuth: confianza opcional en Nginx local para limitar inicios por IP, almacenamiento acotado y más pruebas.",
+        "fr": "Sécurisation OAuth : confiance facultative dans le Nginx local pour limiter les connexions par IP, stockage borné et tests supplémentaires.",
+        "it": "Sicurezza OAuth rafforzata: fiducia opzionale in Nginx locale per limitare gli accessi per IP, memoria limitata e nuovi test.",
+        "nl": "OAuth-beveiliging verbeterd: optioneel vertrouwen in lokale Nginx voor inloglimieten per IP, begrensd geheugen en extra tests.",
+        "pt": "Segurança OAuth melhorada: confiança opcional no Nginx local para limitar logins por IP, memória limitada e testes adicionais.",
+        "pl": "Zwiększono bezpieczeństwo OAuth: opcjonalne zaufanie do lokalnego Nginx dla limitów logowania według IP, ograniczona pamięć i dodatkowe testy.",
+        "uk": "Посилено захист OAuth: необов’язкова довіра до локального Nginx для обмеження входів за IP, обмеження пам’яті та нові тести.",
+        "zh-cn": "增强 OAuth 安全性：可选信任本地 Nginx，实现按 IP 限制登录尝试，并限制内存占用及增加测试。"
       },
       "0.3.21": {
         "en": "Prepare official ioBroker publishing checks: package and js-controller integration tests in CI, with a dedicated security review checklist.",
         "ru": "Подготовлены проверки для публикации в ioBroker: тесты пакета и интеграционный запуск через js-controller в CI, а также отдельный аудит безопасности.",
-        "de": "Paket- und js-controller-Integrationstests in CI sowie Sicherheitsprüfungen zur Vorbereitung der ioBroker-Veröffentlichung."
+        "de": "Paket- und js-controller-Integrationstests in CI sowie Sicherheitsprüfungen zur Vorbereitung der ioBroker-Veröffentlichung.",
+        "es": "Se añadieron comprobaciones de publicación: pruebas de paquete e integración con js-controller en CI y revisión de seguridad.",
+        "fr": "Ajout des vérifications de publication : tests de package et d’intégration js-controller dans CI et audit de sécurité.",
+        "it": "Aggiunti controlli per la pubblicazione: test del pacchetto e di integrazione con js-controller in CI e revisione di sicurezza.",
+        "nl": "Publicatiecontroles toegevoegd: pakket- en js-controller-integratietests in CI plus een beveiligingscontrole.",
+        "pt": "Adicionados testes de publicação: validação do pacote, integração js-controller em CI e revisão de segurança.",
+        "pl": "Dodano testy publikacji: walidację pakietu, integrację z js-controller w CI i przegląd bezpieczeństwa.",
+        "uk": "Додано перевірки публікації: тести пакета й інтеграції з js-controller у CI та огляд безпеки.",
+        "zh-cn": "新增发布前检查：CI 中的包验证、js-controller 集成测试和安全审查。"
       },
       "0.3.20": {
         "en": "Improved hiding of the redundant legacy Admin footer save/close buttons in the custom device editor tab.",
         "ru": "Улучшено скрытие лишних нижних кнопок legacy Admin (сохранение/закрытие) во вкладке редактора устройств.",
-        "de": "Verbessertes Ausblenden der redundanten unteren Legacy-Admin-Schaltflächen im Geräteeditor-Tab."
+        "de": "Verbessertes Ausblenden der redundanten unteren Legacy-Admin-Schaltflächen im Geräteeditor-Tab.",
+        "es": "Se mejoró la ocultación de los botones antiguos de guardar y cerrar en la pestaña del editor.",
+        "fr": "Amélioration du masquage des boutons hérités Enregistrer/Fermer dans l’éditeur.",
+        "it": "Migliorata la gestione dei vecchi pulsanti Salva/Chiudi nella scheda dell’editor.",
+        "nl": "Verbergen van overbodige oude Opslaan/Sluiten-knoppen in de editor verbeterd.",
+        "pt": "Melhorada a ocultação dos botões antigos Guardar/Fechar na aba do editor.",
+        "pl": "Ulepszono ukrywanie zbędnych starych przycisków Zapisz/Zamknij w edytorze.",
+        "uk": "Покращено приховування зайвих старих кнопок Зберегти/Закрити в редакторі.",
+        "zh-cn": "改进设备编辑器中冗余旧版保存/关闭按钮的隐藏行为。"
       },
       "0.3.16": {
         "en": "Initial public release: Yandex Smart Home bridge with OAuth, typed mappings, availability controls, diagnostics and backup/restore.",
         "ru": "Первый публичный релиз: мост к Яндекс Умному дому с OAuth, преобразованиями значений, доступностью, диагностикой и резервным копированием.",
-        "de": "Erste öffentliche Version: Yandex Smart Home Bridge mit OAuth, Wertzuordnungen, Verfügbarkeit, Diagnose und Sicherung."
+        "de": "Erste öffentliche Version: Yandex Smart Home Bridge mit OAuth, Wertzuordnungen, Verfügbarkeit, Diagnose und Sicherung.",
+        "es": "Versión pública inicial: puente a Yandex Smart Home con OAuth, conversión de valores, disponibilidad, diagnóstico y copias de seguridad.",
+        "fr": "Première version publique : passerelle Yandex Smart Home avec OAuth, conversions de valeurs, disponibilité, diagnostic et sauvegarde.",
+        "it": "Prima versione pubblica: bridge Yandex Smart Home con OAuth, mappature dei valori, disponibilità, diagnostica e backup.",
+        "nl": "Eerste openbare versie: Yandex Smart Home-bridge met OAuth, waardemapping, beschikbaarheid, diagnose en back-up/herstel.",
+        "pt": "Primeira versão pública: ponte Yandex Smart Home com OAuth, mapeamento de valores, disponibilidade, diagnóstico e backup.",
+        "pl": "Pierwsze publiczne wydanie: most Yandex Smart Home z OAuth, mapowaniem wartości, dostępnością, diagnostyką i kopią zapasową.",
+        "uk": "Перший публічний випуск: міст до Yandex Smart Home з OAuth, перетворенням значень, доступністю, діагностикою та резервним копіюванням.",
+        "zh-cn": "首次公开发布：支持 OAuth、数值映射、在线状态、诊断和备份恢复的 Yandex Smart Home 桥接器。"
       }
     },
     "type": "communication",
@@ -84,8 +169,17 @@
     "materializeTab": true,
     "adminTab": {
       "name": {
+        "en": "Yandex Smart Home",
+        "de": "Yandex Smart Home",
         "ru": "Яндекс Умный дом",
-        "en": "Yandex Smart Home"
+        "es": "Hogar inteligente Yandex",
+        "fr": "Maison connectée Yandex",
+        "it": "Casa intelligente Yandex",
+        "nl": "Yandex Smart Home",
+        "pt": "Casa inteligente Yandex",
+        "pl": "Inteligentny dom Yandex",
+        "uk": "Розумний дім Yandex",
+        "zh-cn": "Yandex 智能家居"
       },
       "icon": "yandex-ud-bridge.svg",
       "link": "/adapter/yandex-ud-bridge/tab_m.html",

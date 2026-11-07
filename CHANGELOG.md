@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.26
+
+- Translate adapter metadata, all published release notes and the JSON Config settings screen into all 11 ioBroker languages.
+- Use stable JSON Config translation keys with Weblate-compatible `admin/i18n/<language>/translations.json` files.
+- Preserve existing settings, OAuth credentials and device bindings; the standalone device editor retains its existing Russian-language UI pending separate translation work.
+
 ## 0.3.25
 
 - Add an explicit pressure-unit preset UI for float pressure properties.
