@@ -14,9 +14,16 @@ test('callback debounce uses adapter-managed timer and is cancelled on unload', 
 
 test('standard ioBroker test-and-release workflow checks without automatically publishing', () => {
     const workflow=fs.readFileSync(path.join(__dirname,'..','.github','workflows','test-and-release.yml'),'utf8');
-    assert.match(workflow,/ioBroker\/testing-action-check@v1/);
+    assert.match(workflow,/ioBroker\/testing-action-check@v2/);
     assert.match(workflow,/ioBroker\/testing-action-adapter@v1/);
     assert.match(workflow,/node-version: '24\.x'/);
-    assert.match(workflow,/node-version: \['22\.x', '24\.x'\]/);
-    assert.doesNotMatch(workflow,/^\s+deploy:\s*$/m);
+    assert.match(workflow,/node-version: \['22\.x', '24\.x', '26\.x'\]/);
+    assert.match(workflow,/node-version: \\['22\\.x', '24\\.x', '26\\.x'\\]/);
+    assert.match(workflow,/os: \\[ubuntu-latest, windows-latest, macos-latest\\]/);
+    assert.match(workflow,/needs: check-and-lint/);
+    assert.match(workflow,/group: \\$\\{\\{ github\\.ref \\}\\}/);
+    assert.match(workflow,/branches: \\['main', '\\*', '\\*\\*'\\]/);
+    assert.match(workflow,/^  deploy:\\s*$/m);
+    assert.match(workflow,/^    if: \\$\\{\\{ false \\}\\}/m, 'release publishing MUST remain disabled');
+    assert.match(workflow,/ioBroker\\/testing-action-deploy@v1/);
 });
