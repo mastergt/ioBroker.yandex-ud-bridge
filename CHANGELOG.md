@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.25
+
+- Add an explicit pressure-unit preset UI for float pressure properties.
+- Support hPa, Pa, kPa, bar, mmHg, atm input and Yandex-approved Pa, bar, mmHg, atm output.
+- Generate the existing scale read transform and unit metadata only after clicking Apply; preserve existing manual transforms until then.
+- Add conversion, recognition and editor regression tests.
+
 ## 0.3.24
 
 - Fix native ioBroker state picker disappearing after clicking Select: legacy footer detector could hide the entire adapter document when Save and Cancel became visible.
