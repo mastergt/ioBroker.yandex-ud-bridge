@@ -6,7 +6,7 @@
 
 **ioBroker Yandex Smart Home Bridge** is an unofficial, self-hosted adapter that connects ioBroker states to **Yandex Smart Home / Alice** via your own Yandex Smart Home provider skill. Expose existing smart-home devices, virtual buttons, lights, sensors, gates, curtains and HLS camera streams without running an external cloud bridge.
 
-**Author:** Sergey Batayshchikov · **First public release:** v0.3.16 · **License:** MIT.
+**Author:** Sergey Batayshchikov · **Initial public GitHub development:** v0.3.16 · **First npm release planned:** v0.3.26 · **License:** MIT.
 
 > Independent community project. Not affiliated with, endorsed by, or maintained by Yandex or the ioBroker project. The adapter is not part of the official ioBroker adapter repository unless explicitly announced otherwise.
 
