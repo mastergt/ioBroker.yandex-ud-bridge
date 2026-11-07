@@ -21,7 +21,11 @@ test('real Yandex URL is accepted and pending authorize survives adapter restart
     const first=new LocalOAuth(config,dir,logger,()=>now);
     const nonce=first.authRequest(params());
     assert.ok(nonce.length>25);
-    assert.equal(fs.statSync(first.pendingFile).mode & 0o777,0o600);
+    // POSIX file mode bits are not meaningful for Windows ACLs. The runtime
+    // still writes the nonce only as a hash; verify that on every platform.
+    if (process.platform !== 'win32') {
+        assert.equal(fs.statSync(first.pendingFile).mode & 0o777, 0o600);
+    }
     assert.ok(!fs.readFileSync(first.pendingFile,'utf8').includes(nonce));
     now += 4*60_000;
     const second=new LocalOAuth(config,dir,logger,()=>now);

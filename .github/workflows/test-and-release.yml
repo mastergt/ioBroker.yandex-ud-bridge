@@ -1,10 +1,11 @@
 name: Test and Release
 
-# Based on the ioBroker.example JavaScript workflow.
-# NPM deployment is deliberately disabled until trusted publishing is set up.
+# Standard ioBroker checks and cross-platform adapter tests.
+# First npm release is manual: the deploy job is intentionally disabled.
 on:
   push:
-    branches: [main]
+    # "*" matches root-level branch names; "**" also matches branches with slashes.
+    branches: ['main', '*', '**']
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-**"
@@ -13,29 +14,31 @@ on:
 permissions:
   contents: read
 
+# Match the official ioBroker template; cancel superseded runs on the same ref.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   check-and-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: ioBroker/testing-action-check@v1
+      - uses: ioBroker/testing-action-check@v2
         with:
           node-version: '24.x'
           install-command: 'npm install --no-audit --no-fund'
           package-cache: 'false'
-          # The adapter does not yet have an ESLint script.
+          # ESLint isn't configured yet; package validation still runs here.
           lint: 'false'
 
   adapter-tests:
+    needs: check-and-lint
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['22.x', '24.x']
-        os: [ubuntu-latest]
+        node-version: ['22.x', '24.x', '26.x']
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: ioBroker/testing-action-adapter@v1
         with:
@@ -44,6 +47,20 @@ jobs:
           install-command: 'npm install --no-audit --no-fund'
           package-cache: 'false'
 
-# First release is manual. Do not add an active deploy job until the
-# maintainer configures npm Trusted Publishing for this exact workflow
-# and explicitly approves enabling automated releases.
+  # Placeholder required by ioBroker Repository Checker.
+  # NEVER publish without the maintainer's separate explicit approval,
+  # verified npm Trusted Publishing, and a reviewed release tag.
+  deploy:
+    needs: [check-and-lint, adapter-tests]
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: ioBroker/testing-action-deploy@v1
+        with:
+          node-version: '24.x'
+          install-command: 'npm install --no-audit --no-fund'
+          package-cache: 'false'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
